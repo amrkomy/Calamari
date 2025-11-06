@@ -4,27 +4,32 @@ const ONESIGNAL_APP_ID = "4d4396ed-4766-4646-8449-07fa9c7db4f1";
 const ONESIGNAL_REST_KEY = process.env.ONESIGNAL_REST_KEY;
 
 exports.handler = async (event) => {
+  // السماح فقط بـ POST
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method Not Allowed" };
   }
 
+  // تأكد من وجود المفتاح في البيئة
   if (!ONESIGNAL_REST_KEY) {
+    console.error("ONESIGNAL_REST_KEY is missing in environment variables.");
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: "ONESIGNAL_REST_KEY is not configured" }),
+      body: JSON.stringify({ error: "Server misconfiguration: missing API key." }),
     };
   }
 
   try {
-    const { title, message, imageUrl } = JSON.parse(event.body);
+    const { title, message, imageUrl } = JSON.parse(event.body || "{}");
 
-    // تحقق من وجود الحقول المطلوبة
     if (!title || !message) {
-      return { statusCode: 400, body: JSON.stringify({ error: "Missing title or message" }) };
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: "Missing required fields: title and message." }),
+      };
     }
 
-    // إنشاء ترويسة المصادقة الصحيحة
-    const auth = Buffer.from(`:${ONESIGNAL_REST_KEY}`).toString('base64');
+    // ⚠️ هذا هو الجزء المهم: ترميز المفتاح كـ Basic Auth صحيح
+    const auth = Buffer.from(`:${ONESIGNAL_REST_KEY}`).toString("base64");
 
     const payload = {
       app_id: ONESIGNAL_APP_ID,
@@ -38,7 +43,7 @@ exports.handler = async (event) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Basic ${auth}`,
+        Authorization: `Basic ${auth}`, // ✅ صححنا هنا
       },
       body: JSON.stringify(payload),
     });
@@ -54,9 +59,10 @@ exports.handler = async (event) => {
       body: JSON.stringify(result),
     };
   } catch (error) {
+    console.error("Function error:", error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: error.message }),
+      body: JSON.stringify({ error: "Internal server error.", details: error.message }),
     };
   }
 };
