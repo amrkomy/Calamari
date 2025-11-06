@@ -1,16 +1,26 @@
 const CACHE = "oss-v1";
-const FILES = ["/", "/index.html", "/app.js"];   // أيقونة هنضيفها بعدين
+const FILES = [
+  "/",
+  "/index.html",
+  "/app.js",
+  "/manifest.json",
+  "/icon-192.png",
+  "/icon-512.png"
+];
 
-self.addEventListener("install", e =>
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)))
-);
+self.addEventListener("install", (e) => {
+  e.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(FILES)));
+});
 
-self.addEventListener("fetch", e => {
-  // نخدم فقط الملفات المحلية؛ أى رابط خارجى يروح للشبكة مباشرة
-  const isLocal = e.request.url.startsWith(self.location.origin);
-  if (!isLocal) return;   // ما نتدخلش
+self.addEventListener("fetch", (e) => {
+  // تجاهل الطلبات غير المحلية
+  if (!e.request.url.startsWith(self.location.origin)) return;
 
+  // تجاهل جميع الطلبات غير GET (مثل POST إلى Functions)
+  if (e.request.method !== "GET") return;
+
+  // خدّم الملفات من الـ Cache أولاً
   e.respondWith(
-    caches.match(e.request).then(res => res || fetch(e.request))
+    caches.match(e.request).then((res) => res || fetch(e.request))
   );
 });
