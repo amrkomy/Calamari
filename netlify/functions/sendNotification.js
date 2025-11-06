@@ -1,7 +1,7 @@
 // netlify/functions/sendNotification.js
 
 const ONESIGNAL_APP_ID = "4d4396ed-4766-4646-8449-07fa9c7db4f1";
-const ONESIGNAL_REST_KEY = "os_v2_app_jvbzn3khmzdenbcja75jy7nu6fdfowlhiuqeoouzeg2x7m3rd66acadiicfbevreb36bfocdfv4zh6khjdfi7pi4qcb5muge3l5pxuy";
+const ONESIGNAL_REST_KEY = process.env.ONESIGNAL_REST_KEY; // ← من البيئة، وليس من الكود
 
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
@@ -30,7 +30,7 @@ exports.handler = async (event) => {
   const result = await response.json();
 
   return {
-    statusCode: 200,
+    statusCode: response.status,
     headers: {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Headers": "Content-Type",
