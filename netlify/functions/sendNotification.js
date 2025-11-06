@@ -1,7 +1,7 @@
 // netlify/functions/sendNotification.js
 
 const ONESIGNAL_APP_ID = "1def250f-bed4-4f41-b46b-0126e442efbc";
-const ONESIGNAL_REST_KEY = "os_v2_app_dxxskd562rhudndlaetoiqxpxr3gkqymui5uenmcohuxkmln35o5gyd5kmw7rdkhdkgyyh47zv2o4mx5shlfrzz663wqsjtqirm7iri";
+const ONESIGNAL_REST_KEY = "os_v2_app_dxxskd562rhudndlaetoiqxpxswvf5xbxhqudx4j2xalxkwcunm72yyhfl5qaty6w72tym2kfouyasi7v2tbibod5v6bs3bovh6o46i";
 
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
