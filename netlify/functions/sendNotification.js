@@ -1,22 +1,25 @@
 // netlify/functions/sendNotification.js
 
-const ONESIGNAL_APP_ID = process.env.ONESIGNAL_APP_ID;
-const ONESIGNAL_REST_KEY = process.env.ONESIGNAL_REST_KEY;
-
-if (!ONESIGNAL_APP_ID || !ONESIGNAL_REST_KEY) {
-  return {
-    statusCode: 500,
-    body: JSON.stringify({ error: "Missing OneSignal credentials" }),
-  };
-}
-
 exports.handler = async (event) => {
+  // التحقق من المنهج
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method Not Allowed" };
   }
 
+  // جلب المتغيرات من البيئة
+  const ONESIGNAL_APP_ID = process.env.ONESIGNAL_APP_ID;
+  const ONESIGNAL_REST_KEY = process.env.ONESIGNAL_REST_KEY;
+
+  if (!ONESIGNAL_APP_ID || !ONESIGNAL_REST_KEY) {
+    console.error("Missing OneSignal environment variables");
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: "Server misconfiguration" }),
+    };
+  }
+
   try {
-    const { title, message, imageUrl } = JSON.parse(event.body);
+    const { title, message, imageUrl } = JSON.parse(event.body || "{}");
 
     const payload = {
       app_id: ONESIGNAL_APP_ID,
@@ -38,7 +41,7 @@ exports.handler = async (event) => {
     const result = await response.json();
 
     return {
-      statusCode: response.status,
+      statusCode: 200,
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers": "Content-Type",
@@ -46,6 +49,7 @@ exports.handler = async (event) => {
       body: JSON.stringify(result),
     };
   } catch (error) {
+    console.error("Function error:", error);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: error.message }),
