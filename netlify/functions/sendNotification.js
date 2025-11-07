@@ -1,40 +1,54 @@
 // netlify/functions/sendNotification.js
 
-const ONESIGNAL_APP_ID = "4d4396ed-4766-4646-8449-07fa9c7db4f1";
-const ONESIGNAL_REST_KEY = "os_v2_app_jvbzn3khmzdenbcja75jy7nu6e43zsettcsuogvo2adu7bgsamlftmedf6lwvdr7ebto46pm52by6hjqvquga5unzbi2fbu6gunxq4a";
+const ONESIGNAL_APP_ID = process.env.ONESIGNAL_APP_ID;
+const ONESIGNAL_REST_KEY = process.env.ONESIGNAL_REST_KEY;
+
+if (!ONESIGNAL_APP_ID || !ONESIGNAL_REST_KEY) {
+  return {
+    statusCode: 500,
+    body: JSON.stringify({ error: "Missing OneSignal credentials" }),
+  };
+}
 
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method Not Allowed" };
   }
 
-  const { title, message, imageUrl } = JSON.parse(event.body);
+  try {
+    const { title, message, imageUrl } = JSON.parse(event.body);
 
-  const payload = {
-    app_id: ONESIGNAL_APP_ID,
-    included_segments: ["All"],
-    headings: { en: title },
-    contents: { en: message },
-    chrome_web_image: imageUrl || undefined,
-  };
+    const payload = {
+      app_id: ONESIGNAL_APP_ID,
+      included_segments: ["All"],
+      headings: { en: title },
+      contents: { en: message },
+      chrome_web_image: imageUrl || undefined,
+    };
 
-  const response = await fetch("https://onesignal.com/api/v1/notifications", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Basic ${ONESIGNAL_REST_KEY}`,
-    },
-    body: JSON.stringify(payload),
-  });
+    const response = await fetch("https://onesignal.com/api/v1/notifications", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Basic ${ONESIGNAL_REST_KEY}`,
+      },
+      body: JSON.stringify(payload),
+    });
 
-  const result = await response.json();
+    const result = await response.json();
 
-  return {
-    statusCode: 200,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Headers": "Content-Type",
-    },
-    body: JSON.stringify(result),
-  };
+    return {
+      statusCode: response.status,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "Content-Type",
+      },
+      body: JSON.stringify(result),
+    };
+  } catch (error) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: error.message }),
+    };
+  }
 };
