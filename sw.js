@@ -1,4 +1,4 @@
-const CACHE = "oss-v1";
+const CACHE = "calamari";
 const FILES = [
   "/",
   "/index.html",
