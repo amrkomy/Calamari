@@ -454,6 +454,80 @@ body {
   font-size: 13px;
 }
 
+/* أنماط زر "إضافة رد" — متناسق مع باقي الواجهة */
+.comment-btn {
+  background: var(--success);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: 'Tajawal', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.2s;
+}
+
+.comment-btn:hover {
+  background: #2e7d32;
+}
+
+.comment-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* أنماط حقل إدخال الرد */
+.add-comment-section textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  resize: vertical;
+  min-height: 60px;
+  font-family: 'Tajawal', sans-serif;
+  font-size: 14px;
+  direction: rtl;
+}
+
+/* أقسام الردود */
+.comments-section, .add-comment-section {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.comments-list {
+  max-height: 200px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.comment-item {
+  background: #f9f9f9;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  font-size: 14px;
+  border-left: 3px solid var(--primary);
+}
+
+.comment-author {
+  font-weight: bold;
+  color: var(--primary);
+}
+
+.comment-date {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
 .notification-alert {
   position: fixed;
   top: 15px;
@@ -533,15 +607,6 @@ body {
   0% { transform: scale(1); }
   50% { transform: scale(1.05); }
   100% { transform: scale(1); }
-}
-
-@media (max-width: 768px) {
-  .install-pwa-btn {
-    bottom: 70px;
-    left: 15px;
-    width: 50px;
-    height: 50px;
-  }
 }
 
 /* ========== درج الإشعارات من الأعلى - متوافق مع ألوان الشكاوى ========== */
