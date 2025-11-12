@@ -27,16 +27,24 @@ let realtimeChannel = null;
 let deferredPrompt = null;
 let lastComplaintIds = new Set();
 
-// ======== دالة إرسال إشعار OneSignal عبر Netlify Function ========
+// ======== دالة إرسال إشعار OneSignal (متوافقة مع sendNotification.js) ========
 async function sendOneSignalNotification(complaint) {
   try {
-    const response = await fetch("/.netlify/functions/notifyNewComplaint", {
+    const payload = {
+      title: "شكوى جديدة",
+      message: `عميل: ${complaint.customer_name || 'مجهول'}\nالفرع: ${complaint.branches?.name || 'غير محدد'}`,
+      // لا نرسل صورة في الإشعارات التلقائية (اختياري)
+    };
+
+    const response = await fetch("/.netlify/functions/sendNotification", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ complaint })
+      body: JSON.stringify(payload)
     });
+
     if (!response.ok) {
-      console.warn("OneSignal notification failed:", await response.json());
+      const text = await response.text();
+      console.warn("OneSignal error (raw):", text);
     }
   } catch (e) {
     console.warn("Failed to send OneSignal notification:", e);
@@ -727,4 +735,5 @@ if (manualNotifyForm) {
       btn.innerHTML = '<i class="fas fa-paper-plane"></i> إرسال الإشعار';
     }
   });
+
 }
