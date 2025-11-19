@@ -1,27 +1,101 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>إدارة الشكاوى | Cesaro</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#000000"/>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>إدارة الشكاوى | كليماري</title>
+  <link rel="manifest" href="manifest.json">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- OneSignal Web SDK -->
+  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+  <script>
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(async function(OneSignal) {
+      await OneSignal.init({
+        appId: "2ccf7c9b-680e-47f6-b6d6-0729f3dbd452",
+        notifyButton: { enable: false }
+      });
+    });
+  </script>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
-    body { background: #f5f5f5; padding: 20px; }
-    .container { max-width: 1200px; margin: 0 auto; }
+    :root {
+      --primary: #000000;
+      --secondary: #282828;
+      --accent: #D7CCC8;
+      --bg: #F5F5F5;
+      --card: #fff;
+      --text: #333;
+      --muted: #757575;
+      --success: #388E3C;
+      --warning: #FFA000;
+      --danger: #D32F2F;
+      --info: #1976D2;
+    }
 
-    /* أنماط زر تفعيل الإشعارات (مدمج مع الواجهة) */
-    .top-actions {
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .app-container {
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
+    .top-bar {
+      background: linear-gradient(180deg, var(--primary), var(--secondary));
+      color: #fff;
+      padding: 15px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
-    .page-title { font-size: 24px; font-weight: 700; color: #000; }
+
+    .top-bar-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .page-title {
+      font-size: 20px;
+      font-weight: 500;
+    }
+
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      font-weight: 700;
+    }
+
     .stats-btn {
-      background: #000;
-      color: white;
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
       border: none;
       padding: 8px 12px;
       border-radius: 6px;
@@ -30,81 +104,158 @@
       align-items: center;
       gap: 5px;
       font-size: 13px;
+      transition: all 0.3s;
+      font-family: 'Tajawal', sans-serif;
+      text-decoration: none;
     }
-    .stats-btn:hover { background: #333; }
 
-    /* أنماط قسم الإرسال (كما في calamari-message) */
-    .send-section {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    .stats-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .content-area {
+      padding: 15px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
       margin-bottom: 20px;
     }
-    .form-group {
+
+    @media (min-width: 768px) {
+      .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .stat-card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .stat-title {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+
+    .stat-change {
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .stat-change.up { color: var(--success); }
+    .stat-change.down { color: var(--danger); }
+    .total-complaints { color: var(--primary); }
+    .pending-complaints { color: var(--warning); }
+    .resolved-complaints { color: var(--success); }
+    .rejected-complaints { color: var(--danger); }
+
+    .chart-card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
       margin-bottom: 15px;
     }
-    .form-group label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: 500;
-      color: #333;
-    }
-    .form-control {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-family: 'Tajawal', sans-serif;
-    }
-    .btn-primary {
-      background: #000;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-family: 'Tajawal', sans-serif;
-      width: 100%;
-    }
-    .btn-primary:hover { background: #333; }
 
-    /* سجل الإشعارات */
-    .history-section {
-      background: white;
-      padding: 20px;
+    .chart-title {
+      font-size: 16px;
+      margin-bottom: 15px;
+      color: var(--primary);
+    }
+
+    .table-container {
+      background: #fff;
       border-radius: 10px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-      margin-bottom: 20px;
+      overflow: hidden;
     }
-    .history-title { font-size: 18px; margin-bottom: 15px; color: #000; }
-    .history-item {
-      padding: 10px 0;
+
+    .table-header {
+      padding: 12px 15px;
       border-bottom: 1px solid #eee;
     }
-    .history-item:last-child { border-bottom: none; }
-    .history-item strong { color: #000; display: block; }
-    .history-item small { color: #777; }
 
-    /* أنماط إدارة الشكاوى (كما في admin-complants) */
-    .complaints-section {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    .table-title {
+      font-size: 16px;
+      color: var(--primary);
+      margin-bottom: 10px;
     }
-    .complaints-title { font-size: 18px; margin-bottom: 15px; color: #000; }
+
+    .table-filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .table-filters select, .table-filters input {
+      padding: 8px 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-family: 'Tajawal', sans-serif;
+      flex: 1;
+      min-width: 120px;
+      font-size: 13px;
+    }
+
+    .refresh-btn {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 13px;
+      transition: all 0.3s;
+    }
+
+    .refresh-btn:hover {
+      background: var(--secondary);
+    }
+
     .complaints-table {
       width: 100%;
       border-collapse: collapse;
+      font-size: 13px;
     }
-    .complaints-table th,
-    .complaints-table td {
+
+    .complaints-table th {
+      background: #f9f9f9;
       padding: 10px;
       text-align: right;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    .complaints-table td {
+      padding: 10px;
       border-bottom: 1px solid #eee;
     }
-    .complaints-table th { color: #757575; font-weight: 500; }
+
+    .complaints-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .complaints-table tr:hover {
+      background: #f9f9f9;
+    }
+
     .status-badge {
       display: inline-block;
       padding: 3px 8px;
@@ -112,78 +263,471 @@
       font-size: 11px;
       font-weight: 500;
     }
-    .status-pending { background: #FFF3E0; color: #FFA000; }
-    .status-resolved { background: #E8F5E9; color: #388E3C; }
-    .status-rejected { background: #FFEBEE; color: #D32F2F; }
+
+    .status-pending { background: #FFF3E0; color: var(--warning); }
+    .status-resolved { background: #E8F5E9; color: var(--success); }
+    .status-rejected { background: #FFEBEE; color: var(--danger); }
+
     .action-btn {
-      background: #1976D2;
-      color: white;
-      border: none;
       padding: 5px 10px;
       border-radius: 4px;
+      font-size: 12px;
       cursor: pointer;
+      border: none;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .view-btn {
+      background: var(--info);
+      color: #fff;
+    }
+
+    .view-btn:hover {
+      background: #1565C0;
+    }
+
+    .details-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+    }
+
+    .details-content {
+      background: #fff;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: modalFadeIn 0.3s ease;
+    }
+
+    .details-header {
+      padding: 12px 15px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      background: #fff;
+      z-index: 1;
+    }
+
+    .details-title {
+      font-size: 16px;
+      color: var(--primary);
+    }
+
+    .close-details {
+      background: none;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      color: var(--muted);
+    }
+
+    .details-body {
+      padding: 15px;
+    }
+
+    .complaint-meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 12px;
+      margin-bottom: 15px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .complaint-meta div {
+      font-size: 13px;
+    }
+
+    .complaint-meta strong {
+      display: block;
+      color: var(--muted);
+      margin-bottom: 3px;
+      font-weight: 500;
       font-size: 12px;
     }
 
-    /* إشعار منبثق */
+    .complaint-content {
+      margin-bottom: 20px;
+    }
+
+    .complaint-content h5 {
+      margin-bottom: 8px;
+      color: var(--primary);
+      font-size: 14px;
+    }
+
+    .complaint-content p {
+      line-height: 1.6;
+      background: #f9f9f9;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+
+    .resolution-section {
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .resolution-section h5 {
+      margin-bottom: 8px;
+      color: var(--primary);
+      font-size: 14px;
+    }
+
+    .resolution-section p {
+      line-height: 1.6;
+      background: #f9f9f9;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+
+    .resolution-meta {
+      font-size: 12px;
+      color: var(--muted);
+      text-align: left;
+    }
+
+    .action-section h5 {
+      margin-bottom: 10px;
+      color: var(--primary);
+      font-size: 14px;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      border: none;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      flex: 1;
+      min-width: 100px;
+      justify-content: center;
+    }
+
+    .resolve-btn {
+      background: var(--success);
+      color: #fff;
+    }
+
+    .reject-btn {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    .pending-btn {
+      background: var(--warning);
+      color: #fff;
+    }
+
+    .resolution-input {
+      margin-bottom: 15px;
+    }
+
+    .resolution-input label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+      font-size: 13px;
+    }
+
+    .resolution-input textarea {
+      width: 100%;
+      min-height: 80px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 13px;
+    }
+
     .notification-alert {
       position: fixed;
-      top: 20px;
-      right: 20px;
-      background: #000;
+      top: 15px;
+      right: 15px;
+      left: 15px;
+      background: var(--primary);
       color: #fff;
       padding: 12px 15px;
       border-radius: 8px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 1100;
+      transform: translateY(-150%);
+      transition: transform 0.3s ease;
+    }
+
+    .notification-alert.show {
+      transform: translateY(0);
+    }
+
+    .notification-alert i {
+      font-size: 18px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.8);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      z-index: 1100;
       display: none;
+      max-width: 90%;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .install-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      z-index: 100;
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes vibrate {
+      0% { transform: translate(0); }
+      20% { transform: translate(-2px, 2px); }
+      40% { transform: translate(-2px, -2px); }
+      60% { transform: translate(2px, 2px); }
+      80% { transform: translate(2px, -2px); }
+      100% { transform: translate(0); }
+    }
+
+    .vibrate {
+      animation: vibrate 0.5s linear;
+    }
+
+    @media (min-width: 768px) {
+      .content-area {
+        padding: 20px;
+      }
+      .notification-alert {
+        left: auto;
+        max-width: 350px;
+      }
+    }
+
+    /* تحسينات إضافية للواجهة */
+    .install-pwa-btn {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: #000;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
       z-index: 1000;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      animation: pulse 2s infinite;
+    }
+    
+    .install-pwa-btn:hover {
+      transform: scale(1.1);
+      background: #333;
+    }
+    
+    .install-pwa-btn i {
+      font-size: 24px;
+    }
+    
+    .install-pwa-btn.hidden {
+      display: none;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    @media (max-width: 768px) {
+      .install-pwa-btn {
+        bottom: 70px;
+        left: 15px;
+        width: 50px;
+        height: 50px;
+      }
+    }
+
+    /* أنماط الردود */
+    .comments-section, .add-comment-section {
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px solid #eee;
+    }
+
+    .comments-list {
+      max-height: 200px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column-reverse;
+    }
+
+    .comment-item {
+      background: #f9f9f9;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-size: 14px;
+      border-left: 3px solid #000;
+    }
+
+    .comment-author {
+      font-weight: bold;
+      color: #000;
+    }
+
+    .comment-date {
+      font-size: 12px;
+      color: #777;
+      margin-top: 4px;
+    }
+
+    .add-comment-section textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      resize: vertical;
+      min-height: 60px;
+    }
+
+    .comment-btn {
+      background: #28a745;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'Tajawal', sans-serif;
+    }
+    .comment-btn:hover {
+      background: #218838;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <!-- زر تفعيل إشعارات الشكاوى -->
-    <div class="top-actions">
-      <h2 class="page-title">إدارة الشكاوى والإشعارات</h2>
-      <button id="enableAdminNotifBtn" class="stats-btn">
-        <i class="fas fa-bell"></i> تفعيل إشعارات الشكاوى
-      </button>
+  <div class="app-container">
+    <div class="top-bar">
+      <h2 class="page-title">إدارة الشكاوى</h2>
+      <div class="top-bar-actions">
+        <a href="https://future-complants.netlify.app/" class="stats-btn">
+          <i class="fas fa-chart-line"></i> ارسال اشعارات للمتابعين
+        </a>
+        <div class="user-avatar">c</div>
+      </div>
     </div>
 
-    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-      <!-- قسم إرسال الإشعارات (كما في calamari-message) -->
-      <div style="flex: 1; min-width: 300px;">
-        <div class="send-section">
-          <h3>إرسال إشعار</h3>
-          <div class="form-group">
-            <label>العنوان</label>
-            <input type="text" id="title" class="form-control" />
-          </div>
-          <div class="form-group">
-            <label>الرسالة <span style="color: red;">*</span></label>
-            <textarea id="message" class="form-control" rows="3" required></textarea>
-          </div>
-          <div class="form-group">
-            <label>صورة (اختياري)</label>
-            <input type="text" id="imageUrl" class="form-control" placeholder="رابط الصورة" />
-          </div>
-          <button id="sendBroadcastBtn" class="btn-primary">إرسال الإشعار</button>
+    <div class="content-area">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-title">إجمالي الشكاوى</div>
+          <div class="stat-value total-complaints" id="totalComplaints">0</div>
+          <div class="stat-change up"><i class="fas fa-arrow-up"></i> 12% عن الشهر الماضي</div>
         </div>
-
-        <div class="history-section">
-          <h3 class="history-title">سجل الإشعارات</h3>
-          <div id="historyList">
-            <div class="history-item">
-              <strong>لا توجد إشعارات بعد</strong>
-            </div>
-          </div>
+        <div class="stat-card">
+          <div class="stat-title">شكاوى معلقة</div>
+          <div class="stat-value pending-complaints" id="pendingComplaints">0</div>
+          <div class="stat-change down"><i class="fas fa-arrow-down"></i> 5% عن الأسبوع الماضي</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">تم حلها</div>
+          <div class="stat-value resolved-complaints" id="resolvedComplaints">0</div>
+          <div class="stat-change up"><i class="fas fa-arrow-up"></i> 8% عن الأسبوع الماضي</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">مرفوضة</div>
+          <div class="stat-value rejected-complaints" id="rejectedComplaints">0</div>
+          <div class="stat-change"><i class="fas fa-equals"></i> لا يوجد تغيير</div>
         </div>
       </div>
 
-      <!-- قسم الشكاوى (كما في admin-complants) -->
-      <div style="flex: 2; min-width: 300px;">
-        <div class="complaints-section">
-          <h3 class="complaints-title">آخر الشكاوى</h3>
+      <div class="chart-card">
+        <h4 class="chart-title">الشكاوى حسب الشهر</h4>
+        <canvas id="monthlyChart"></canvas>
+      </div>
+
+      <div class="table-container">
+        <div class="table-header">
+          <h3 class="table-title">آخر الشكاوى</h3>
+          <div class="table-filters">
+            <select id="complaintFilterStatus">
+              <option value="all">جميع الحالات</option>
+              <option value="pending">معلقة</option>
+              <option value="resolved">تم الحل</option>
+              <option value="rejected">مرفوضة</option>
+            </select>
+            <select id="complaintFilterBranch">
+              <option value="all">جميع الفروع</option>
+            </select>
+            <button id="refreshComplaintsBtn" class="refresh-btn">
+              <i class="fas fa-sync-alt"></i> تحديث
+            </button>
+          </div>
+        </div>
+        <div class="table-responsive">
           <table class="complaints-table">
             <thead>
               <tr>
@@ -193,22 +737,683 @@
                 <th>الإجراءات</th>
               </tr>
             </thead>
-            <tbody id="complaintsTableBody">
-              <tr><td colspan="4" style="text-align: center;">جارٍ التحميل...</td></tr>
-            </tbody>
+            <tbody id="complaintsTableBody"></tbody>
           </table>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- إشعار منبثق -->
-  <div id="notifBanner" class="notification-alert">
-    <i class="fas fa-bell"></i> <span id="notifText">شكوى جديدة!</span>
+  <div class="details-modal" id="detailsModal">
+    <div class="details-content">
+      <div class="details-header">
+        <h3 class="details-title">تفاصيل الشكوى</h3>
+        <button class="close-details" id="closeDetailsBtn">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="details-body">
+        <div class="complaint-meta">
+          <div><strong>رقم الشكوى:</strong><span id="detailComplaintId"></span></div>
+          <div><strong>التاريخ:</strong><span id="detailComplaintDate"></span></div>
+          <div><strong>الحالة:</strong><span id="detailComplaintStatus"></span></div>
+          <div><strong>الهاتف:</strong><span id="detailComplaintPhone"></span></div>
+          <div><strong>الفرع:</strong><span id="detailComplaintBranch"></span></div>
+        </div>
+        <div class="complaint-content">
+          <h5>نص الشكوى:</h5>
+          <p id="detailComplaintText"></p>
+        </div>
+
+        <!-- قسم الردود -->
+        <div class="comments-section" id="commentsSection">
+          <h5>الردود:</h5>
+          <div id="commentsList" class="comments-list">
+            <!-- سيتم ملؤه ديناميكيًا -->
+          </div>
+        </div>
+
+        <!-- إضافة رد جديد -->
+        <div class="add-comment-section" id="addCommentSection">
+          <h5>أضف ردًا:</h5>
+          <textarea id="newCommentText" placeholder="اكتب ردك هنا..."></textarea>
+          <button id="addCommentBtn" class="comment-btn">
+            <i class="fas fa-comment"></i> إضافة رد
+          </button>
+        </div>
+
+        <div class="resolution-section" id="resolutionSection">
+          <h5>ملاحظات الحل:</h5>
+          <p id="detailResolutionNotes"></p>
+          <div class="resolution-meta">
+            تم الحل بواسطة <span id="detailResolvedBy"></span> في 
+            <span id="detailResolvedAt"></span>
+          </div>
+        </div>
+        <div class="action-section" id="actionSection">
+          <h5>تغيير الحالة:</h5>
+          <div class="action-buttons">
+            <button class="action-btn resolve-btn" id="resolveBtn">
+              <i class="fas fa-check-circle"></i> تم الحل
+            </button>
+            <button class="action-btn reject-btn" id="rejectBtn">
+              <i class="fas fa-times-circle"></i> رفض
+            </button>
+            <button class="action-btn pending-btn" id="pendingBtn">
+              <i class="fas fa-clock"></i> إعادة للانتظار
+            </button>
+          </div>
+          <div class="resolution-input">
+            <label for="detailResolutionText">ملاحظات الحل:</label>
+            <textarea id="detailResolutionText" placeholder="أدخل ملاحظات الحل هنا..."></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-  <script src="script.js"></script>
+  <div class="notification-alert" id="notificationAlert">
+    <i class="fas fa-bell"></i>
+    <span id="notificationText">شكوى جديدة تم تقديمها</span>
+  </div>
+  
+  <div class="toast" id="toast"></div>
+  
+  <button id="installPwaBtn" class="install-pwa-btn hidden">
+    <i class="fas fa-download"></i>
+  </button>
+
+  <script>
+    // ======== Supabase الإعدادات ========
+    const SUPABASE_URL = "https://mehycwkqiwaeumauaanh.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1laHljd2txaXdhZXVtYXVhYW5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMxMTQ5NTIsImV4cCI6MjA3ODY5MDk1Mn0.IJTtLNRhXsasaw-d8j_kIjKbZRTcvlM5f8zCzDEXGUA";
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // ======== متغيرات التطبيق ========
+    const totalComplaintsEl = document.getElementById('totalComplaints');
+    const pendingComplaintsEl = document.getElementById('pendingComplaints');
+    const resolvedComplaintsEl = document.getElementById('resolvedComplaints');
+    const rejectedComplaintsEl = document.getElementById('rejectedComplaints');
+    const complaintsTableBody = document.getElementById('complaintsTableBody');
+    const detailsModal = document.getElementById('detailsModal');
+    const notificationAlert = document.getElementById('notificationAlert');
+    const notificationText = document.getElementById('notificationText');
+    const toast = document.getElementById('toast');
+    const installPwaBtn = document.getElementById('installPwaBtn');
+
+    // متغيرات الردود الجديدة
+    const commentsList = document.getElementById('commentsList');
+    const newCommentText = document.getElementById('newCommentText');
+    const addCommentBtn = document.getElementById('addCommentBtn');
+
+    let monthlyChart;
+    let currentComplaintId = null;
+    let allBranches = [];
+    let realtimeChannel = null;
+    let deferredPrompt = null;
+    let lastComplaintIds = new Set(); // ← للكشف عن الشكاوى الجديدة
+
+    // ======== دالة إرسال إشعار OneSignal عبر Netlify Function ========
+    async function sendOneSignalNotification(complaint) {
+      try {
+        const response = await fetch("/.netlify/functions/notifyNewComplaint", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ complaint })
+        });
+        if (!response.ok) {
+          console.warn("OneSignal notification failed:", await response.json());
+        }
+      } catch (e) {
+        console.warn("Failed to send OneSignal notification:", e);
+      }
+    }
+
+    // ======== تهيئة التطبيق ========
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadBranches();
+      await loadComplaints();
+      await loadStats();
+      initCharts();
+      await loadChartsData();
+      setupEventListeners();
+      setupRealtimeUpdates();
+      setupPWA();
+    });
+
+    function cleanup() {
+      if (realtimeChannel) supabase.removeChannel(realtimeChannel);
+    }
+
+    // ======== PWA التثبيت ========
+    function setupPWA() {
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        showInstallButton();
+      });
+
+      installPwaBtn.addEventListener('click', async () => {
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          const { outcome } = await deferredPrompt.userChoice;
+          if (outcome === 'accepted') {
+            hideInstallButton();
+            logAppInstalled();
+          } else {
+            setTimeout(() => showInstallButton(), 30000);
+          }
+          deferredPrompt = null;
+        }
+      });
+
+      window.addEventListener('appinstalled', () => {
+        hideInstallButton();
+        deferredPrompt = null;
+        logAppInstalled();
+      });
+
+      if (!isAppInstalled()) {
+        setTimeout(() => {
+          if (!isAppInstalled() && deferredPrompt) {
+            showInstallButton();
+          }
+        }, 3000);
+      }
+    }
+
+    function showInstallButton() {
+      if (!isAppInstalled()) {
+        installPwaBtn.classList.remove('hidden');
+        setTimeout(() => hideInstallButton(), 30000);
+      }
+    }
+
+    function hideInstallButton() {
+      installPwaBtn.classList.add('hidden');
+    }
+
+    function isAppInstalled() {
+      return window.matchMedia('(display-mode: standalone)').matches || 
+            window.navigator.standalone ||
+            document.referrer.includes('android-app://');
+    }
+
+    function logAppInstalled() {
+      console.log('تم تثبيت التطبيق بنجاح');
+      showToast('تم تثبيت التطبيق بنجاح على جهازك!', 3000);
+    }
+
+    // ======== الإشعارات المحلية ========
+    function showNewComplaintNotification(complaint) {
+      notificationText.textContent = `شكوى جديدة من ${complaint.customer_name || 'عميل'}`;
+      notificationAlert.classList.add('show', 'vibrate');
+      playNotificationSound();
+      if ('vibrate' in navigator) navigator.vibrate([200, 100, 200]);
+      setTimeout(() => {
+        notificationAlert.classList.remove('show', 'vibrate');
+      }, 5000);
+    }
+
+    function playNotificationSound() {
+      const audio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3');
+      audio.volume = 0.3;
+      audio.play().catch(() => {});
+    }
+
+    // ======== إدارة الفروع ========
+    async function loadBranches() {
+      try {
+        const { data: branches, error } = await supabase
+          .from('branches')
+          .select('id, name')
+          .order('name');
+        
+        if (!error && branches) {
+          allBranches = branches;
+          const branchFilter = document.getElementById('complaintFilterBranch');
+          branchFilter.innerHTML = '<option value="all">جميع الفروع</option>';
+          branches.forEach(b => {
+            const option = document.createElement('option');
+            option.value = b.id;
+            option.textContent = b.name;
+            branchFilter.appendChild(option);
+          });
+        }
+      } catch (e) {
+        console.error('Error loading branches:', e);
+      }
+    }
+
+    // ======== إدارة الشكاوى ========
+    async function loadComplaints() {
+      const status = document.getElementById('complaintFilterStatus').value;
+      const branchId = document.getElementById('complaintFilterBranch').value;
+      
+      try {
+        let query = supabase
+          .from('complaints')
+          .select(`id, customer_name, customer_phone, complaint_text, status, 
+                  created_at, resolved_at, resolved_by, resolution_notes, 
+                  branch_id, branches(name)`)
+          .order('created_at', { ascending: false })
+          .limit(20);
+
+        if (status !== 'all') query = query.eq('status', status);
+        if (branchId !== 'all') query = query.eq('branch_id', branchId);
+
+        const { data: complaints, error } = await query;
+        
+        if (error) throw error;
+        
+        // ← الكشف عن الشكاوى الجديدة
+        const currentIds = new Set(complaints.map(c => c.id));
+        const newComplaints = complaints.filter(c => !lastComplaintIds.has(c.id));
+        if (newComplaints.length > 0) {
+          newComplaints.forEach(complaint => {
+            showNewComplaintNotification(complaint);
+            sendOneSignalNotification(complaint); // ← إرسال إشعار OneSignal
+          });
+        }
+        lastComplaintIds = currentIds;
+
+        renderComplaintsTable(complaints || []);
+      } catch (e) {
+        console.error('Error loading complaints:', e);
+        showToast('حدث خطأ أثناء تحميل الشكاوى', 3000);
+      }
+    }
+
+    function renderComplaintsTable(complaints) {
+      complaintsTableBody.innerHTML = '';
+      
+      if (complaints.length === 0) {
+        complaintsTableBody.innerHTML = `
+          <tr>
+            <td colspan="4" style="text-align:center; padding:20px">
+              لا توجد شكاوى متطابقة مع معايير البحث
+            </td>
+          </tr>`;
+        return;
+      }
+
+      complaints.forEach(c => {
+        const tr = document.createElement('tr');
+        const date = new Date(c.created_at).toLocaleString('ar-EG', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+        
+        const statusClass = {
+          pending: 'status-pending',
+          resolved: 'status-resolved',
+          rejected: 'status-rejected'
+        }[c.status];
+        
+        const statusText = {
+          pending: 'معلقة',
+          resolved: 'تم الحل',
+          rejected: 'مرفوضة'
+        }[c.status];
+        
+        tr.innerHTML = `
+          <td>${date}</td>
+          <td>${escapeHtml(c.customer_name)}</td>
+          <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+          <td><button class="action-btn view-btn" data-id="${c.id}">
+                <i class="fas fa-eye"></i> عرض
+              </button></td>`;
+        
+        complaintsTableBody.appendChild(tr);
+      });
+
+      document.querySelectorAll('.view-btn').forEach(btn => {
+        btn.addEventListener('click', () => showComplaintDetails(btn.dataset.id));
+      });
+    }
+
+    // ======== الإحصائيات ========
+    async function loadStats() {
+      try {
+        const { count: totalCount } = await supabase
+          .from('complaints')
+          .select('*', { count: 'exact', head: true });
+        
+        const { count: pendingCount } = await supabase
+          .from('complaints')
+          .select('*', { count: 'exact', head: true })
+          .eq('status', 'pending');
+        
+        const { count: resolvedCount } = await supabase
+          .from('complaints')
+          .select('*', { count: 'exact', head: true })
+          .eq('status', 'resolved');
+        
+        const { count: rejectedCount } = await supabase
+          .from('complaints')
+          .select('*', { count: 'exact', head: true })
+          .eq('status', 'rejected');
+        
+        totalComplaintsEl.textContent = totalCount || 0;
+        pendingComplaintsEl.textContent = pendingCount || 0;
+        resolvedComplaintsEl.textContent = resolvedCount || 0;
+        rejectedComplaintsEl.textContent = rejectedCount || 0;
+      } catch (e) {
+        console.error('Error loading statistics:', e);
+      }
+    }
+
+    // ======== الرسوم البيانية ========
+    function initCharts() {
+      const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+      monthlyChart = new Chart(monthlyCtx, {
+        type: 'line',
+        data: {
+          labels: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'],
+          datasets: [{
+            label: 'عدد الشكاوى',
+            data: [0, 0, 0, 0, 0, 0],
+            backgroundColor: 'rgba(0,0,0,.2)',
+            borderColor: 'rgba(0,0,0,1)',
+            borderWidth: 2,
+            tension: 0.3,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'top',
+              rtl: true
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    }
+
+    async function loadChartsData() {
+      try {
+        const now = new Date();
+        const sixMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 5, 1);
+        
+        const { data: complaints, error } = await supabase
+          .from('complaints')
+          .select('id, created_at, branch_id, branches(name)')
+          .gte('created_at', sixMonthsAgo.toISOString());
+        
+        if (error) throw error;
+
+        const monthNames = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 
+                          'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+        const labels = [];
+        const counts = [];
+        
+        for (let i = 5; i >= 0; i--) {
+          const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+          labels.push(monthNames[d.getMonth()]);
+          
+          const next = new Date(d.getFullYear(), d.getMonth() + 1, 1);
+          const c = complaints.filter(x => {
+            const dt = new Date(x.created_at);
+            return dt >= d && dt < next;
+          }).length;
+          
+          counts.push(c);
+        }
+        
+        monthlyChart.data.labels = labels;
+        monthlyChart.data.datasets[0].data = counts;
+        monthlyChart.update();
+      } catch (e) {
+        console.error('Error loading charts data:', e);
+      }
+    }
+
+    // ======== تفاصيل الشكوى ========
+    async function showComplaintDetails(complaintId) {
+      try {
+        const { data: c, error } = await supabase
+          .from('complaints')
+          .select(`id, customer_name, customer_phone, complaint_text, status, 
+                  created_at, resolved_at, resolved_by, resolution_notes, 
+                  branch_id, branches(name)`)
+          .eq('id', complaintId)
+          .single();
+        
+        if (error) throw error;
+        
+        currentComplaintId = c.id;
+        document.getElementById('detailComplaintId').textContent = c.id;
+        document.getElementById('detailComplaintDate').textContent = 
+          new Date(c.created_at).toLocaleString('ar-EG', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+        
+        const statusText = {
+          pending: '<span class="status-badge status-pending">معلقة</span>',
+          resolved: '<span class="status-badge status-resolved">تم الحل</span>',
+          rejected: '<span class="status-badge status-rejected">مرفوضة</span>'
+        }[c.status];
+        
+        document.getElementById('detailComplaintStatus').innerHTML = statusText;
+        document.getElementById('detailComplaintText').textContent = c.complaint_text || '';
+        document.getElementById('detailComplaintPhone').textContent = c.customer_phone || '-';
+        document.getElementById('detailComplaintBranch').textContent = 
+          c.branches ? c.branches.name : '-';
+        
+        const resolutionSection = document.getElementById('resolutionSection');
+        if (c.status === 'resolved' || c.status === 'rejected') {
+          resolutionSection.style.display = 'block';
+          document.getElementById('detailResolutionNotes').textContent = 
+            c.resolution_notes || 'لا توجد ملاحظات';
+          document.getElementById('detailResolvedBy').textContent = 
+            c.resolved_by || 'غير معروف';
+          document.getElementById('detailResolvedAt').textContent = 
+            c.resolved_at ? new Date(c.resolved_at).toLocaleString('ar-EG', {
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+            }) : 'غير معروف';
+        } else {
+          resolutionSection.style.display = 'none';
+        }
+        
+        document.getElementById('actionSection').style.display = 'block';
+        document.getElementById('detailResolutionText').value = '';
+        
+        // تحميل الردود
+        await loadComplaintComments(c.id);
+        
+        detailsModal.style.display = 'flex';
+      } catch (e) {
+        console.error('Error loading complaint details:', e);
+        showToast('حدث خطأ أثناء تحميل تفاصيل الشكوى', 3000);
+      }
+    }
+
+    // ======== الردود على الشكوى ========
+    async function loadComplaintComments(complaintId) {
+      try {
+        const { data: comments, error } = await supabase
+          .from('complaint_comments')
+          .select('id, author, comment_text, created_at')
+          .eq('complaint_id', complaintId)
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        renderComments(comments || []);
+      } catch (e) {
+        console.error('Error loading comments:', e);
+        showToast('خطأ في تحميل الردود', 3000);
+      }
+    }
+
+    function renderComments(comments) {
+      commentsList.innerHTML = '';
+      
+      if (comments.length === 0) {
+        commentsList.innerHTML = '<p style="color:#999; font-style:italic;">لا توجد ردود حتى الآن.</p>';
+        return;
+      }
+
+      comments.forEach(comment => {
+        const date = new Date(comment.created_at).toLocaleString('ar-EG', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+
+        const div = document.createElement('div');
+        div.className = 'comment-item';
+        div.innerHTML = `
+          <div class="comment-author">${escapeHtml(comment.author)}</div>
+          <div>${escapeHtml(comment.comment_text)}</div>
+          <div class="comment-date">${date}</div>
+        `;
+        commentsList.appendChild(div);
+      });
+    }
+
+    async function addComplaintComment() {
+      const text = newCommentText.value.trim();
+      if (!text) {
+        showToast('يرجى كتابة رد قبل الإرسال', 3000);
+        return;
+      }
+
+      if (!currentComplaintId) {
+        showToast('لم يتم تحديد شكوى', 3000);
+        return;
+      }
+
+      try {
+        const { error } = await supabase
+          .from('complaint_comments')
+          .insert({
+            complaint_id: currentComplaintId,
+            author: 'المشرف',
+            comment_text: text,
+            created_at: new Date().toISOString()
+          });
+
+        if (error) throw error;
+
+        showToast('تم إضافة الرد بنجاح', 3000);
+        newCommentText.value = '';
+        await loadComplaintComments(currentComplaintId);
+      } catch (e) {
+        console.error('Error adding comment:', e);
+        showToast('فشل إضافة الرد', 3000);
+      }
+    }
+
+    // ======== تحديث حالة الشكوى ========
+    async function updateComplaintStatus(status) {
+      if (!currentComplaintId) return;
+      
+      const resolutionNotes = document.getElementById('detailResolutionText').value.trim();
+      
+      try {
+        const updateData = {
+          status,
+          resolved_at: status !== 'pending' ? new Date().toISOString() : null,
+          resolved_by: status !== 'pending' ? 'المسؤول' : null,
+          resolution_notes: resolutionNotes || null
+        };
+        
+        const { error } = await supabase
+          .from('complaints')
+          .update(updateData)
+          .eq('id', currentComplaintId);
+        
+        if (error) throw error;
+        
+        const statusTextMap = {
+          pending: 'معلقة',
+          resolved: 'تم الحل',
+          rejected: 'مرفوضة'
+        };
+        
+        showToast(`تم تحديث حالة الشكوى إلى "${statusTextMap[status]}"`, 3000);
+        detailsModal.style.display = 'none';
+        
+        await loadComplaints();
+        await loadStats();
+        await loadChartsData();
+      } catch (e) {
+        console.error('Error updating complaint status:', e);
+        showToast('حدث خطأ أثناء تحديث حالة الشكوى', 3000);
+      }
+    }
+
+    // ======== التحديثات الفورية ========
+    function setupRealtimeUpdates() {
+      if (realtimeChannel) supabase.removeChannel(realtimeChannel);
+      
+      realtimeChannel = supabase
+        .channel('complaints-insert')
+        .on('postgres_changes', {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'complaints'
+        }, (payload) => {
+          // تحديث فوري دون انتظار إعادة التحميل
+          loadComplaints(); // هذه الدالة تكتشف الشكوى الجديدة وتُظهر إشعارًا
+        })
+        .subscribe();
+    }
+
+    // ======== دوال مساعدة ========
+    function showToast(message, duration = 3000) {
+      toast.textContent = message;
+      toast.style.display = 'block';
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, duration);
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text ?? '';
+      return div.innerHTML;
+    }
+
+    function setupEventListeners() {
+      document.getElementById('complaintFilterStatus').addEventListener('change', loadComplaints);
+      document.getElementById('complaintFilterBranch').addEventListener('change', loadComplaints);
+      document.getElementById('refreshComplaintsBtn').addEventListener('click', loadComplaints);
+      
+      document.getElementById('closeDetailsBtn').addEventListener('click', () => {
+        detailsModal.style.display = 'none';
+      });
+      
+      document.getElementById('resolveBtn').addEventListener('click', () => updateComplaintStatus('resolved'));
+      document.getElementById('rejectBtn').addEventListener('click', () => updateComplaintStatus('rejected'));
+      document.getElementById('pendingBtn').addEventListener('click', () => updateComplaintStatus('pending'));
+      
+      addCommentBtn.addEventListener('click', addComplaintComment);
+      
+      detailsModal.addEventListener('click', (e) => {
+        if (e.target === detailsModal) detailsModal.style.display = 'none';
+      });
+    }
+  </script>
 </body>
 </html>
