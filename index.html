@@ -795,28 +795,27 @@
     let lastComplaintIds = new Set();
 
     // ======== دالة إرسال إشعار OneSignal عبر Netlify Function ========
-    async function sendOneSignalNotification(complaint, target = "admin") {
-      try {
-        const response = await fetch("/.netlify/functions/sendNotification", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            target: target, // "admin" أو "customers"
-            title: target === "admin" ? "شكوى جديدة" : "إشعار للمتابعين",
-            message: target === "admin"
-              ? `من: ${complaint.customer_name || 'عميل مجهول'} - ${complaint.complaint_text?.substring(0, 50)}...`
-              : "",
-            imageUrl: null
-          })
-        });
-        if (!response.ok) {
-          console.warn("OneSignal notification failed:", await response.json());
-        }
-      } catch (e) {
-        console.warn("Failed to send OneSignal notification:", e);
-      }
+async function sendOneSignalNotification(complaint) {
+  try {
+    const payload = {
+      target: "admin", // ← مهم جدًا
+      title: "شكوى جديدة",
+      message: `من: ${complaint.customer_name || 'عميل مجهول'} - ${complaint.complaint_text?.substring(0, 50)}...`,
+      imageUrl: null
+    };
+    const response = await fetch("/.netlify/functions/sendNotification", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    if (!response.ok) {
+      const err = await response.json();
+      console.warn("OneSignal notification failed:", err);
     }
-
+  } catch (e) {
+    console.warn("Failed to send OneSignal notification:", e);
+  }
+}
     // ======== دالة إرسال إشعار يدوي (للمتابعين) ========
     async function sendManualNotification(title, message, imageUrl) {
       try {
