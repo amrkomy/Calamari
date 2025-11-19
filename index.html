@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#000000"/>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
-  <title>إدارة الشكاوى | كاليماري</title>
+  <title>إدارة الشكاوى | Future</title>
   <link rel="manifest" href="manifest.json">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -24,11 +24,13 @@
       --danger: #D32F2F;
       --info: #1976D2;
     }
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
+
     body {
       font-family: 'Tajawal', sans-serif;
       background-color: var(--bg);
@@ -36,10 +38,12 @@
       min-height: 100vh;
       -webkit-tap-highlight-color: transparent;
     }
+
     .app-container {
       max-width: 100%;
       overflow-x: hidden;
     }
+
     .top-bar {
       background: linear-gradient(180deg, var(--primary), var(--secondary));
       color: #fff;
@@ -52,15 +56,18 @@
       align-items: center;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
+
     .top-bar-actions {
       display: flex;
       align-items: center;
       gap: 12px;
     }
+
     .page-title {
       font-size: 20px;
       font-weight: 500;
     }
+
     .user-avatar {
       width: 36px;
       height: 36px;
@@ -71,8 +78,8 @@
       justify-content: center;
       color: var(--primary);
       font-weight: 700;
-      cursor: pointer;
     }
+
     .stats-btn {
       background: rgba(255, 255, 255, 0.2);
       color: #fff;
@@ -88,51 +95,61 @@
       font-family: 'Tajawal', sans-serif;
       text-decoration: none;
     }
+
     .stats-btn:hover {
       background: rgba(255, 255, 255, 0.3);
     }
+
     .content-area {
       padding: 15px;
     }
+
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 12px;
       margin-bottom: 20px;
     }
+
     @media (min-width: 768px) {
       .stats-grid {
         grid-template-columns: repeat(4, 1fr);
       }
     }
+
     .stat-card {
       background: #fff;
       border-radius: 10px;
       padding: 15px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
+
     .stat-title {
       font-size: 13px;
       color: var(--muted);
       margin-bottom: 8px;
     }
+
     .stat-value {
       font-size: 22px;
       font-weight: 700;
       margin-bottom: 5px;
     }
+
     .stat-change {
       font-size: 11px;
       display: flex;
       align-items: center;
       gap: 4px;
     }
+
     .stat-change.up { color: var(--success); }
     .stat-change.down { color: var(--danger); }
     .total-complaints { color: var(--primary); }
     .pending-complaints { color: var(--warning); }
     .resolved-complaints { color: var(--success); }
     .rejected-complaints { color: var(--danger); }
+
     .chart-card {
       background: #fff;
       border-radius: 10px;
@@ -140,31 +157,37 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.05);
       margin-bottom: 15px;
     }
+
     .chart-title {
       font-size: 16px;
       margin-bottom: 15px;
       color: var(--primary);
     }
+
     .table-container {
       background: #fff;
       border-radius: 10px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.05);
       overflow: hidden;
     }
+
     .table-header {
       padding: 12px 15px;
       border-bottom: 1px solid #eee;
     }
+
     .table-title {
       font-size: 16px;
       color: var(--primary);
       margin-bottom: 10px;
     }
+
     .table-filters {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
     }
+
     .table-filters select, .table-filters input {
       padding: 8px 10px;
       border: 1px solid #ddd;
@@ -174,6 +197,7 @@
       min-width: 120px;
       font-size: 13px;
     }
+
     .refresh-btn {
       background: var(--primary);
       color: #fff;
@@ -187,14 +211,17 @@
       font-size: 13px;
       transition: all 0.3s;
     }
+
     .refresh-btn:hover {
       background: var(--secondary);
     }
+
     .complaints-table {
       width: 100%;
       border-collapse: collapse;
       font-size: 13px;
     }
+
     .complaints-table th {
       background: #f9f9f9;
       padding: 10px;
@@ -202,16 +229,20 @@
       font-weight: 500;
       color: var(--muted);
     }
+
     .complaints-table td {
       padding: 10px;
       border-bottom: 1px solid #eee;
     }
+
     .complaints-table tr:last-child td {
       border-bottom: none;
     }
+
     .complaints-table tr:hover {
       background: #f9f9f9;
     }
+
     .status-badge {
       display: inline-block;
       padding: 3px 8px;
@@ -219,9 +250,11 @@
       font-size: 11px;
       font-weight: 500;
     }
+
     .status-pending { background: #FFF3E0; color: var(--warning); }
     .status-resolved { background: #E8F5E9; color: var(--success); }
     .status-rejected { background: #FFEBEE; color: var(--danger); }
+
     .action-btn {
       padding: 5px 10px;
       border-radius: 4px;
@@ -233,13 +266,16 @@
       align-items: center;
       gap: 4px;
     }
+
     .view-btn {
       background: var(--info);
       color: #fff;
     }
+
     .view-btn:hover {
       background: #1565C0;
     }
+
     .details-modal {
       position: fixed;
       top: 0;
@@ -253,6 +289,7 @@
       justify-content: center;
       padding: 15px;
     }
+
     .details-content {
       background: #fff;
       border-radius: 10px;
@@ -262,6 +299,7 @@
       overflow-y: auto;
       animation: modalFadeIn 0.3s ease;
     }
+
     .details-header {
       padding: 12px 15px;
       border-bottom: 1px solid #eee;
@@ -273,10 +311,12 @@
       background: #fff;
       z-index: 1;
     }
+
     .details-title {
       font-size: 16px;
       color: var(--primary);
     }
+
     .close-details {
       background: none;
       border: none;
@@ -284,9 +324,11 @@
       cursor: pointer;
       color: var(--muted);
     }
+
     .details-body {
       padding: 15px;
     }
+
     .complaint-meta {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -295,9 +337,11 @@
       padding-bottom: 15px;
       border-bottom: 1px solid #eee;
     }
+
     .complaint-meta div {
       font-size: 13px;
     }
+
     .complaint-meta strong {
       display: block;
       color: var(--muted);
@@ -305,14 +349,17 @@
       font-weight: 500;
       font-size: 12px;
     }
+
     .complaint-content {
       margin-bottom: 20px;
     }
+
     .complaint-content h5 {
       margin-bottom: 8px;
       color: var(--primary);
       font-size: 14px;
     }
+
     .complaint-content p {
       line-height: 1.6;
       background: #f9f9f9;
@@ -320,16 +367,19 @@
       border-radius: 6px;
       font-size: 13px;
     }
+
     .resolution-section {
       margin-bottom: 20px;
       padding-bottom: 15px;
       border-bottom: 1px solid #eee;
     }
+
     .resolution-section h5 {
       margin-bottom: 8px;
       color: var(--primary);
       font-size: 14px;
     }
+
     .resolution-section p {
       line-height: 1.6;
       background: #f9f9f9;
@@ -338,22 +388,26 @@
       margin-bottom: 8px;
       font-size: 13px;
     }
+
     .resolution-meta {
       font-size: 12px;
       color: var(--muted);
       text-align: left;
     }
+
     .action-section h5 {
       margin-bottom: 10px;
       color: var(--primary);
       font-size: 14px;
     }
+
     .action-buttons {
       display: flex;
       gap: 8px;
       margin-bottom: 15px;
       flex-wrap: wrap;
     }
+
     .action-btn {
       padding: 8px 12px;
       border-radius: 6px;
@@ -368,27 +422,33 @@
       min-width: 100px;
       justify-content: center;
     }
+
     .resolve-btn {
       background: var(--success);
       color: #fff;
     }
+
     .reject-btn {
       background: var(--danger);
       color: #fff;
     }
+
     .pending-btn {
       background: var(--warning);
       color: #fff;
     }
+
     .resolution-input {
       margin-bottom: 15px;
     }
+
     .resolution-input label {
       display: block;
       margin-bottom: 6px;
       font-weight: 500;
       font-size: 13px;
     }
+
     .resolution-input textarea {
       width: 100%;
       min-height: 80px;
@@ -398,6 +458,7 @@
       font-family: 'Tajawal', sans-serif;
       font-size: 13px;
     }
+
     .notification-alert {
       position: fixed;
       top: 15px;
@@ -415,12 +476,15 @@
       transform: translateY(-150%);
       transition: transform 0.3s ease;
     }
+
     .notification-alert.show {
       transform: translateY(0);
     }
+
     .notification-alert i {
       font-size: 18px;
     }
+
     .toast {
       position: fixed;
       bottom: 20px;
@@ -436,6 +500,7 @@
       text-align: center;
       font-size: 14px;
     }
+
     /* تحسينات إضافية للواجهة */
     .install-pwa-btn {
       position: fixed;
@@ -456,21 +521,26 @@
       transition: all 0.3s ease;
       animation: pulse 2s infinite;
     }
+
     .install-pwa-btn:hover {
       transform: scale(1.1);
       background: #333;
     }
+
     .install-pwa-btn i {
       font-size: 24px;
     }
+
     .install-pwa-btn.hidden {
       display: none;
     }
+
     @keyframes pulse {
       0% { transform: scale(1); }
       50% { transform: scale(1.05); }
       100% { transform: scale(1); }
     }
+
     @media (max-width: 768px) {
       .install-pwa-btn {
         bottom: 70px;
@@ -479,18 +549,21 @@
         height: 50px;
       }
     }
+
     /* أنماط الردود */
     .comments-section, .add-comment-section {
       margin-top: 20px;
       padding-top: 15px;
       border-top: 1px solid #eee;
     }
+
     .comments-list {
       max-height: 200px;
       overflow-y: auto;
       display: flex;
       flex-direction: column-reverse;
     }
+
     .comment-item {
       background: #f9f9f9;
       padding: 10px;
@@ -499,15 +572,18 @@
       font-size: 14px;
       border-left: 3px solid #000;
     }
+
     .comment-author {
       font-weight: bold;
       color: #000;
     }
+
     .comment-date {
       font-size: 12px;
       color: #777;
       margin-top: 4px;
     }
+
     .add-comment-section textarea {
       width: 100%;
       padding: 10px;
@@ -517,6 +593,7 @@
       resize: vertical;
       min-height: 60px;
     }
+
     .comment-btn {
       background: #28a745;
       color: white;
@@ -529,10 +606,12 @@
     .comment-btn:hover {
       background: #218838;
     }
+
     @keyframes modalFadeIn {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
     @keyframes vibrate {
       0% { transform: translate(0); }
       20% { transform: translate(-2px, 2px); }
@@ -541,9 +620,11 @@
       80% { transform: translate(2px, -2px); }
       100% { transform: translate(0); }
     }
+
     .vibrate {
       animation: vibrate 0.5s linear;
     }
+
     @media (min-width: 768px) {
       .content-area {
         padding: 20px;
@@ -560,13 +641,13 @@
     <div class="top-bar">
       <h2 class="page-title">إدارة الشكاوى</h2>
       <div class="top-bar-actions">
-        <!-- زر جديد لإرسال إشعار -->
-        <button id="openBroadcastBtn" class="stats-btn">
-          <i class="fas fa-bell"></i> إرسال إشعار للعملاء
-        </button>
-        <div class="user-avatar" id="openHistoryBtn">c</div>
+        <a href="https://future-complants.netlify.app/" class="stats-btn">
+          <i class="fas fa-chart-line"></i> ارسال اشعارات للمتابعين
+        </a>
+        <div class="user-avatar">c</div>
       </div>
     </div>
+
     <div class="content-area">
       <div class="stats-grid">
         <div class="stat-card">
@@ -590,10 +671,12 @@
           <div class="stat-change"><i class="fas fa-equals"></i> لا يوجد تغيير</div>
         </div>
       </div>
+
       <div class="chart-card">
         <h4 class="chart-title">الشكاوى حسب الشهر</h4>
         <canvas id="monthlyChart"></canvas>
       </div>
+
       <div class="table-container">
         <div class="table-header">
           <h3 class="table-title">آخر الشكاوى</h3>
@@ -628,67 +711,6 @@
       </div>
     </div>
 
-    <!-- Modal إرسال الإشعار -->
-    <div class="details-modal" id="broadcastModal">
-      <div class="details-content">
-        <div class="details-header">
-          <h3 class="details-title">إرسال إشعار للعملاء</h3>
-          <button class="close-details" id="closeBroadcastBtn">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-        <div class="details-body">
-          <div style="margin-bottom: 15px;">
-            <label for="broadcastTitle" style="display: block; margin-bottom: 6px; font-weight: 500; font-size: 13px;">
-              عنوان الإشعار:
-            </label>
-            <input type="text" id="broadcastTitle" placeholder="مثال: عرض اليوم!" 
-                   style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-family: 'Tajawal', sans-serif; font-size: 14px;">
-          </div>
-          <div style="margin-bottom: 15px;">
-            <label for="broadcastMessage" style="display: block; margin-bottom: 6px; font-weight: 500; font-size: 13px;">
-              نص الإشعار:
-            </label>
-            <textarea id="broadcastMessage" placeholder="اكتب الرسالة التي تريد إرسالها..." 
-                      style="width: 100%; min-height: 100px; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-family: 'Tajawal', sans-serif; font-size: 14px;"></textarea>
-          </div>
-          <div style="margin-bottom: 15px;">
-            <label style="display: block; margin-bottom: 6px; font-weight: 500; font-size: 13px;">
-              صورة (اختياري):
-            </label>
-            <input type="file" id="broadcastImage" accept="image/*" 
-                   style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px;">
-            <img id="broadcastImagePreview" src="" alt="معاينة" 
-                 style="display: none; max-width: 100%; margin-top: 10px; border-radius: 6px; border: 1px solid #eee;">
-          </div>
-          <button id="sendBroadcastBtn" class="action-btn resolve-btn" style="width: 100%; padding: 10px; font-size: 14px;">
-            <i class="fas fa-paper-plane"></i> إرسال الإشعار الآن
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Modal سجل الإشعارات -->
-    <div class="details-modal" id="historyModal">
-      <div class="details-content">
-        <div class="details-header">
-          <h3 class="details-title">سجل الإشعارات</h3>
-          <button class="close-details" id="closeHistoryBtn">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-        <div class="details-body">
-          <div id="broadcastHistoryBox" style="max-height: 50vh; overflow-y: auto;">
-            <!-- سيتم ملؤه ديناميكيًا -->
-          </div>
-          <button id="clearHistoryBtn" class="action-btn reject-btn" style="width: 100%; margin-top: 10px; padding: 8px; font-size: 13px;">
-            <i class="fas fa-trash"></i> مسح السجل
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- باقي العناصر الأصلية -->
     <div class="details-modal" id="detailsModal">
       <div class="details-content">
         <div class="details-header">
@@ -709,6 +731,7 @@
             <h5>نص الشكوى:</h5>
             <p id="detailComplaintText"></p>
           </div>
+
           <!-- قسم الردود -->
           <div class="comments-section" id="commentsSection">
             <h5>الردود:</h5>
@@ -716,6 +739,7 @@
               <!-- سيتم ملؤه ديناميكيًا -->
             </div>
           </div>
+
           <!-- إضافة رد جديد -->
           <div class="add-comment-section" id="addCommentSection">
             <h5>أضف ردًا:</h5>
@@ -724,6 +748,7 @@
               <i class="fas fa-comment"></i> إضافة رد
             </button>
           </div>
+
           <div class="resolution-section" id="resolutionSection">
             <h5>ملاحظات الحل:</h5>
             <p id="detailResolutionNotes"></p>
@@ -753,11 +778,14 @@
         </div>
       </div>
     </div>
+
     <div class="notification-alert" id="notificationAlert">
       <i class="fas fa-bell"></i>
       <span id="notificationText">شكوى جديدة تم تقديمها</span>
     </div>
+    
     <div class="toast" id="toast"></div>
+    
     <button id="installPwaBtn" class="install-pwa-btn hidden">
       <i class="fas fa-download"></i>
     </button>
@@ -805,15 +833,15 @@
     let allBranches = [];
     let realtimeChannel = null;
     let deferredPrompt = null;
-    let lastComplaintIds = new Set();
+    let lastComplaintIds = new Set(); // ← للكشف عن الشكاوى الجديدة
 
     // ======== دالة إرسال إشعار OneSignal عبر Netlify Function ========
     async function sendOneSignalNotification(complaint) {
       try {
-        const response = await fetch("/.netlify/functions/notify", {
+        const response = await fetch("/.netlify/functions/notifyNewComplaint", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ type: "new_complaint",  complaint })
+          body: JSON.stringify({ complaint })
         });
         if (!response.ok) {
           console.warn("OneSignal notification failed:", await response.json());
@@ -823,161 +851,7 @@
       }
     }
 
-    // ======== نظام إشعارات البث (Broadcast) ========
-    const broadcastModal = document.getElementById('broadcastModal');
-    const historyModal = document.getElementById('historyModal');
-    const openBroadcastBtn = document.getElementById('openBroadcastBtn');
-    const closeBroadcastBtn = document.getElementById('closeBroadcastBtn');
-    const closeHistoryBtn = document.getElementById('closeHistoryBtn');
-    const broadcastTitle = document.getElementById('broadcastTitle');
-    const broadcastMessage = document.getElementById('broadcastMessage');
-    const broadcastImage = document.getElementById('broadcastImage');
-    const broadcastImagePreview = document.getElementById('broadcastImagePreview');
-    const sendBroadcastBtn = document.getElementById('sendBroadcastBtn');
-    const historyBox = document.getElementById('broadcastHistoryBox');
-    const clearHistoryBtn = document.getElementById('clearHistoryBtn');
-    const openHistoryBtn = document.getElementById('openHistoryBtn');
-
-    const BROADCAST_HISTORY_KEY = 'broadcastHistory';
-    let broadcastHistory = JSON.parse(localStorage.getItem(BROADCAST_HISTORY_KEY) || '[]');
-
-    // معاينة الصورة
-    broadcastImage.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (ev) => {
-          broadcastImagePreview.src = ev.target.result;
-          broadcastImagePreview.style.display = 'block';
-        };
-        reader.readAsDataURL(file);
-      } else {
-        broadcastImagePreview.style.display = 'none';
-      }
-    });
-
-    // عرض سجل الإشعارات
-    function renderBroadcastHistory() {
-      if (broadcastHistory.length === 0) {
-        historyBox.innerHTML = '<p style="color:#999; text-align:center; padding:15px;">لا توجد إشعارات محفوظة</p>';
-      } else {
-        historyBox.innerHTML = broadcastHistory.map(item => `
-          <div style="padding:12px; border-bottom:1px solid #eee;">
-            <div style="display:flex; justify-content:space-between; font-weight:500; margin-bottom:6px;">
-              <span>${escapeHtml(item.title || 'بدون عنوان')}</span>
-              <small style="color:#777;">${new Date(item.time).toLocaleString('ar-EG')}</small>
-            </div>
-            <p style="margin:6px 0; font-size:14px;">${escapeHtml(item.message)}</p>
-            ${item.imageUrl ? `<img src="${item.imageUrl}" alt="صورة" style="max-width:100%; border-radius:6px; margin-top:8px;">` : ''}
-          </div>
-        `).join('');
-      }
-    }
-
-    // فتح نوافذ
-    openBroadcastBtn.addEventListener('click', () => {
-      broadcastTitle.value = '';
-      broadcastMessage.value = '';
-      broadcastImage.value = '';
-      broadcastImagePreview.style.display = 'none';
-      broadcastModal.style.display = 'flex';
-    });
-
-    openHistoryBtn.addEventListener('click', () => {
-      renderBroadcastHistory();
-      historyModal.style.display = 'flex';
-    });
-
-    // إغلاق النوافذ
-    closeBroadcastBtn.addEventListener('click', () => broadcastModal.style.display = 'none');
-    closeHistoryBtn.addEventListener('click', () => historyModal.style.display = 'none');
-    broadcastModal.addEventListener('click', (e) => { if (e.target === broadcastModal) broadcastModal.style.display = 'none'; });
-    historyModal.addEventListener('click', (e) => { if (e.target === historyModal) historyModal.style.display = 'none'; });
-
-    // مسح السجل
-    clearHistoryBtn.addEventListener('click', () => {
-      if (confirm('هل أنت متأكد من مسح سجل الإشعارات؟')) {
-        broadcastHistory = [];
-        localStorage.setItem(BROADCAST_HISTORY_KEY, JSON.stringify(broadcastHistory));
-        renderBroadcastHistory();
-        showToast('تم مسح السجل', 3000);
-      }
-    });
-
-    // إرسال إشعار للعملاء
-    async function sendBroadcastNotification(title, message, imageFile) {
-      let imageUrl = null;
-      if (imageFile) {
-        const formData = new FormData();
-        formData.append('image', imageFile);
-        try {
-          const imgRes = await fetch('https://api.imgbb.com/1/upload?key=7a2772de77491aa8fb9696a1727062bf', {
-            method: 'POST',
-            body: formData
-          });
-          const imgData = await imgRes.json();
-          if (imgData.success) {
-            imageUrl = imgData.data.url;
-          } else {
-            throw new Error('فشل رفع الصورة على ImgBB');
-          }
-        } catch (err) {
-          showToast('فشل رفع الصورة. تأكد من الاتصال.', 4000);
-          return false;
-        }
-      }
-
-      try {
-        const payload = {
-          type: 'broadcast_to_customers',
-           { title, message, imageUrl }
-        };
-        const res = await fetch('/.netlify/functions/notify', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        const result = await res.json();
-        if (result.id) {
-          broadcastHistory.unshift({ time: Date.now(), title, message, imageUrl });
-          localStorage.setItem(BROADCAST_HISTORY_KEY, JSON.stringify(broadcastHistory));
-          return true;
-        } else {
-          console.warn('OneSignal error response:', result);
-          return false;
-        }
-      } catch (err) {
-        console.error('Error sending broadcast:', err);
-        return false;
-      }
-    }
-
-    sendBroadcastBtn.addEventListener('click', async () => {
-      const title = broadcastTitle.value.trim();
-      const message = broadcastMessage.value.trim();
-      const imageFile = broadcastImage.files[0];
-
-      if (!title && !message) {
-        showToast('يرجى إدخال العنوان أو الرسالة', 3000);
-        return;
-      }
-
-      sendBroadcastBtn.disabled = true;
-      sendBroadcastBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
-
-      const success = await sendBroadcastNotification(title, message, imageFile);
-      if (success) {
-        showToast('✅ تم إرسال الإشعار بنجاح!', 4000);
-        broadcastModal.style.display = 'none';
-      } else {
-        showToast('❌ فشل إرسال الإشعار. حاول مرة أخرى.', 4000);
-      }
-
-      sendBroadcastBtn.disabled = false;
-      sendBroadcastBtn.innerHTML = '<i class="fas fa-paper-plane"></i> إرسال الإشعار الآن';
-    });
-
-    // ======== باقي الكود الأصلي دون تغيير ========
+    // ======== تهيئة التطبيق ========
     document.addEventListener('DOMContentLoaded', async () => {
       await loadBranches();
       await loadComplaints();
@@ -988,15 +862,19 @@
       setupRealtimeUpdates();
       setupPWA();
     });
+
     function cleanup() {
       if (realtimeChannel) supabase.removeChannel(realtimeChannel);
     }
+
+    // ======== PWA التثبيت ========
     function setupPWA() {
       window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
         showInstallButton();
       });
+
       installPwaBtn.addEventListener('click', async () => {
         if (deferredPrompt) {
           deferredPrompt.prompt();
@@ -1010,11 +888,13 @@
           deferredPrompt = null;
         }
       });
+
       window.addEventListener('appinstalled', () => {
         hideInstallButton();
         deferredPrompt = null;
         logAppInstalled();
       });
+
       if (!isAppInstalled()) {
         setTimeout(() => {
           if (!isAppInstalled() && deferredPrompt) {
@@ -1023,24 +903,30 @@
         }, 3000);
       }
     }
+
     function showInstallButton() {
       if (!isAppInstalled()) {
         installPwaBtn.classList.remove('hidden');
         setTimeout(() => hideInstallButton(), 30000);
       }
     }
+
     function hideInstallButton() {
       installPwaBtn.classList.add('hidden');
     }
+
     function isAppInstalled() {
       return window.matchMedia('(display-mode: standalone)').matches || 
              window.navigator.standalone ||
              document.referrer.includes('android-app://');
     }
+
     function logAppInstalled() {
       console.log('تم تثبيت التطبيق بنجاح');
       showToast('تم تثبيت التطبيق بنجاح على جهازك!', 3000);
     }
+
+    // ======== الإشعارات المحلية ========
     function showNewComplaintNotification(complaint) {
       notificationText.textContent = `شكوى جديدة من ${complaint.customer_name || 'عميل'}`;
       notificationAlert.classList.add('show', 'vibrate');
@@ -1050,17 +936,21 @@
         notificationAlert.classList.remove('show', 'vibrate');
       }, 5000);
     }
+
     function playNotificationSound() {
       const audio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3');
       audio.volume = 0.3;
       audio.play().catch(() => {});
     }
+
+    // ======== إدارة الفروع ========
     async function loadBranches() {
       try {
-        const {  branches, error } = await supabase
+        const { data: branches, error } = await supabase
           .from('branches')
           .select('id, name')
           .order('name');
+        
         if (!error && branches) {
           allBranches = branches;
           const branchFilter = document.getElementById('complaintFilterBranch');
@@ -1076,9 +966,12 @@
         console.error('Error loading branches:', e);
       }
     }
+
+    // ======== إدارة الشكاوى ========
     async function loadComplaints() {
       const status = document.getElementById('complaintFilterStatus').value;
       const branchId = document.getElementById('complaintFilterBranch').value;
+      
       try {
         let query = supabase
           .from('complaints')
@@ -1087,31 +980,45 @@
                   branch_id, branches(name)`)
           .order('created_at', { ascending: false })
           .limit(20);
+
         if (status !== 'all') query = query.eq('status', status);
         if (branchId !== 'all') query = query.eq('branch_id', branchId);
+
         const { data: complaints, error } = await query;
+        
         if (error) throw error;
+        
+        // ← الكشف عن الشكاوى الجديدة
         const currentIds = new Set(complaints.map(c => c.id));
         const newComplaints = complaints.filter(c => !lastComplaintIds.has(c.id));
         if (newComplaints.length > 0) {
           newComplaints.forEach(complaint => {
             showNewComplaintNotification(complaint);
-            sendOneSignalNotification(complaint);
+            sendOneSignalNotification(complaint); // ← إرسال إشعار OneSignal
           });
         }
         lastComplaintIds = currentIds;
+
         renderComplaintsTable(complaints || []);
       } catch (e) {
         console.error('Error loading complaints:', e);
         showToast('حدث خطأ أثناء تحميل الشكاوى', 3000);
       }
     }
+
     function renderComplaintsTable(complaints) {
       complaintsTableBody.innerHTML = '';
+      
       if (complaints.length === 0) {
-        complaintsTableBody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:20px">لا توجد شكاوى متطابقة</td></tr>`;
+        complaintsTableBody.innerHTML = `
+          <tr>
+            <td colspan="4" style="text-align:center; padding:20px">
+              لا توجد شكاوى متطابقة مع معايير البحث
+            </td>
+          </tr>`;
         return;
       }
+
       complaints.forEach(c => {
         const tr = document.createElement('tr');
         const date = new Date(c.created_at).toLocaleString('ar-EG', {
@@ -1121,44 +1028,57 @@
           hour: '2-digit',
           minute: '2-digit'
         });
+        
         const statusClass = {
           pending: 'status-pending',
           resolved: 'status-resolved',
           rejected: 'status-rejected'
         }[c.status];
+        
         const statusText = {
           pending: 'معلقة',
           resolved: 'تم الحل',
           rejected: 'مرفوضة'
         }[c.status];
+        
         tr.innerHTML = `
           <td>${date}</td>
           <td>${escapeHtml(c.customer_name)}</td>
           <td><span class="status-badge ${statusClass}">${statusText}</span></td>
-          <td><button class="action-btn view-btn" data-id="${c.id}"><i class="fas fa-eye"></i> عرض</button></td>`;
+          <td><button class="action-btn view-btn" data-id="${c.id}">
+                <i class="fas fa-eye"></i> عرض
+              </button></td>`;
+        
         complaintsTableBody.appendChild(tr);
       });
+
       document.querySelectorAll('.view-btn').forEach(btn => {
         btn.addEventListener('click', () => showComplaintDetails(btn.dataset.id));
       });
     }
+
+    // ======== الإحصائيات ========
     async function loadStats() {
       try {
         const { count: totalCount } = await supabase
           .from('complaints')
           .select('*', { count: 'exact', head: true });
+        
         const { count: pendingCount } = await supabase
           .from('complaints')
           .select('*', { count: 'exact', head: true })
           .eq('status', 'pending');
+        
         const { count: resolvedCount } = await supabase
           .from('complaints')
           .select('*', { count: 'exact', head: true })
           .eq('status', 'resolved');
+        
         const { count: rejectedCount } = await supabase
           .from('complaints')
           .select('*', { count: 'exact', head: true })
           .eq('status', 'rejected');
+        
         totalComplaintsEl.textContent = totalCount || 0;
         pendingComplaintsEl.textContent = pendingCount || 0;
         resolvedComplaintsEl.textContent = resolvedCount || 0;
@@ -1167,15 +1087,17 @@
         console.error('Error loading statistics:', e);
       }
     }
+
+    // ======== الرسوم البيانية ========
     function initCharts() {
       const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
       monthlyChart = new Chart(monthlyCtx, {
         type: 'line',
-         {
+        data: {
           labels: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'],
           datasets: [{
             label: 'عدد الشكاوى',
-             [0, 0, 0, 0, 0, 0],
+            data: [0, 0, 0, 0, 0, 0],
             backgroundColor: 'rgba(0,0,0,.2)',
             borderColor: 'rgba(0,0,0,1)',
             borderWidth: 2,
@@ -1199,46 +1121,58 @@
         }
       });
     }
+
     async function loadChartsData() {
       try {
         const now = new Date();
         const sixMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 5, 1);
-        const {  complaints, error } = await supabase
+        
+        const { data: complaints, error } = await supabase
           .from('complaints')
           .select('id, created_at, branch_id, branches(name)')
           .gte('created_at', sixMonthsAgo.toISOString());
+        
         if (error) throw error;
+
         const monthNames = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 
                           'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
         const labels = [];
         const counts = [];
+        
         for (let i = 5; i >= 0; i--) {
           const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
           labels.push(monthNames[d.getMonth()]);
+          
           const next = new Date(d.getFullYear(), d.getMonth() + 1, 1);
           const c = complaints.filter(x => {
             const dt = new Date(x.created_at);
             return dt >= d && dt < next;
           }).length;
+          
           counts.push(c);
         }
+        
         monthlyChart.data.labels = labels;
         monthlyChart.data.datasets[0].data = counts;
         monthlyChart.update();
       } catch (e) {
-        console.error('Error loading charts ', e);
+        console.error('Error loading charts data:', e);
       }
     }
+
+    // ======== تفاصيل الشكوى ========
     async function showComplaintDetails(complaintId) {
       try {
-        const {  c, error } = await supabase
+        const { data: c, error } = await supabase
           .from('complaints')
           .select(`id, customer_name, customer_phone, complaint_text, status, 
                   created_at, resolved_at, resolved_by, resolution_notes, 
                   branch_id, branches(name)`)
           .eq('id', complaintId)
           .single();
+        
         if (error) throw error;
+        
         currentComplaintId = c.id;
         document.getElementById('detailComplaintId').textContent = c.id;
         document.getElementById('detailComplaintDate').textContent = 
@@ -1249,16 +1183,19 @@
             hour: '2-digit',
             minute: '2-digit'
           });
+        
         const statusText = {
           pending: '<span class="status-badge status-pending">معلقة</span>',
           resolved: '<span class="status-badge status-resolved">تم الحل</span>',
           rejected: '<span class="status-badge status-rejected">مرفوضة</span>'
         }[c.status];
+        
         document.getElementById('detailComplaintStatus').innerHTML = statusText;
         document.getElementById('detailComplaintText').textContent = c.complaint_text || '';
         document.getElementById('detailComplaintPhone').textContent = c.customer_phone || '-';
         document.getElementById('detailComplaintBranch').textContent = 
           c.branches ? c.branches.name : '-';
+        
         const resolutionSection = document.getElementById('resolutionSection');
         if (c.status === 'resolved' || c.status === 'rejected') {
           resolutionSection.style.display = 'block';
@@ -1277,22 +1214,29 @@
         } else {
           resolutionSection.style.display = 'none';
         }
+        
         document.getElementById('actionSection').style.display = 'block';
         document.getElementById('detailResolutionText').value = '';
+        
+        // تحميل الردود
         await loadComplaintComments(c.id);
+        
         detailsModal.style.display = 'flex';
       } catch (e) {
         console.error('Error loading complaint details:', e);
         showToast('حدث خطأ أثناء تحميل تفاصيل الشكوى', 3000);
       }
     }
+
+    // ======== الردود على الشكوى ========
     async function loadComplaintComments(complaintId) {
       try {
-        const {  comments, error } = await supabase
+        const { data: comments, error } = await supabase
           .from('complaint_comments')
           .select('id, author, comment_text, created_at')
           .eq('complaint_id', complaintId)
           .order('created_at', { ascending: false });
+
         if (error) throw error;
         renderComments(comments || []);
       } catch (e) {
@@ -1300,12 +1244,15 @@
         showToast('خطأ في تحميل الردود', 3000);
       }
     }
+
     function renderComments(comments) {
       commentsList.innerHTML = '';
+      
       if (comments.length === 0) {
         commentsList.innerHTML = '<p style="color:#999; font-style:italic;">لا توجد ردود حتى الآن.</p>';
         return;
       }
+
       comments.forEach(comment => {
         const date = new Date(comment.created_at).toLocaleString('ar-EG', {
           year: 'numeric',
@@ -1314,6 +1261,7 @@
           hour: '2-digit',
           minute: '2-digit'
         });
+
         const div = document.createElement('div');
         div.className = 'comment-item';
         div.innerHTML = `
@@ -1324,16 +1272,19 @@
         commentsList.appendChild(div);
       });
     }
+
     async function addComplaintComment() {
       const text = newCommentText.value.trim();
       if (!text) {
         showToast('يرجى كتابة رد قبل الإرسال', 3000);
         return;
       }
+
       if (!currentComplaintId) {
         showToast('لم يتم تحديد شكوى', 3000);
         return;
       }
+
       try {
         const { error } = await supabase
           .from('complaint_comments')
@@ -1343,7 +1294,9 @@
             comment_text: text,
             created_at: new Date().toISOString()
           });
+
         if (error) throw error;
+
         showToast('تم إضافة الرد بنجاح', 3000);
         newCommentText.value = '';
         await loadComplaintComments(currentComplaintId);
@@ -1352,9 +1305,13 @@
         showToast('فشل إضافة الرد', 3000);
       }
     }
+
+    // ======== تحديث حالة الشكوى ========
     async function updateComplaintStatus(status) {
       if (!currentComplaintId) return;
+      
       const resolutionNotes = document.getElementById('detailResolutionText').value.trim();
+      
       try {
         const updateData = {
           status,
@@ -1362,18 +1319,23 @@
           resolved_by: status !== 'pending' ? 'المسؤول' : null,
           resolution_notes: resolutionNotes || null
         };
+        
         const { error } = await supabase
           .from('complaints')
           .update(updateData)
           .eq('id', currentComplaintId);
+        
         if (error) throw error;
+        
         const statusTextMap = {
           pending: 'معلقة',
           resolved: 'تم الحل',
           rejected: 'مرفوضة'
         };
+        
         showToast(`تم تحديث حالة الشكوى إلى "${statusTextMap[status]}"`, 3000);
         detailsModal.style.display = 'none';
+        
         await loadComplaints();
         await loadStats();
         await loadChartsData();
@@ -1382,8 +1344,11 @@
         showToast('حدث خطأ أثناء تحديث حالة الشكوى', 3000);
       }
     }
+
+    // ======== التحديثات الفورية ========
     function setupRealtimeUpdates() {
       if (realtimeChannel) supabase.removeChannel(realtimeChannel);
+      
       realtimeChannel = supabase
         .channel('complaints-insert')
         .on('postgres_changes', {
@@ -1395,6 +1360,8 @@
         })
         .subscribe();
     }
+
+    // ======== دوال مساعدة ========
     function showToast(message, duration = 3000) {
       toast.textContent = message;
       toast.style.display = 'block';
@@ -1402,22 +1369,28 @@
         toast.style.display = 'none';
       }, duration);
     }
+
     function escapeHtml(text) {
       const div = document.createElement('div');
       div.textContent = text ?? '';
       return div.innerHTML;
     }
+
     function setupEventListeners() {
       document.getElementById('complaintFilterStatus').addEventListener('change', loadComplaints);
       document.getElementById('complaintFilterBranch').addEventListener('change', loadComplaints);
       document.getElementById('refreshComplaintsBtn').addEventListener('click', loadComplaints);
+      
       document.getElementById('closeDetailsBtn').addEventListener('click', () => {
         detailsModal.style.display = 'none';
       });
+      
       document.getElementById('resolveBtn').addEventListener('click', () => updateComplaintStatus('resolved'));
       document.getElementById('rejectBtn').addEventListener('click', () => updateComplaintStatus('rejected'));
       document.getElementById('pendingBtn').addEventListener('click', () => updateComplaintStatus('pending'));
+      
       addCommentBtn.addEventListener('click', addComplaintComment);
+      
       detailsModal.addEventListener('click', (e) => {
         if (e.target === detailsModal) detailsModal.style.display = 'none';
       });
