@@ -1,6 +1,6 @@
 // sw.js
 
-const CACHE_NAME = 'future-complaints-v1';
+const CACHE_NAME = 'calamari-complaints-v1';
 const urlsToCache = [
   './',
   './index.html',
@@ -82,3 +82,4 @@ self.addEventListener('fetch', (event) => {
       })
   );
 });
+
