@@ -4,7 +4,6 @@ exports.handler = async (event) => {
     return { statusCode: 405, body: "Method Not Allowed" };
   }
 
-  // ✅ قراءة المفاتيح من البيئة (آمن)
   const ADMIN_REST_KEY = process.env.ONESIGNAL_ADMIN_REST_KEY;
   const CUSTOMER_REST_KEY = process.env.ONESIGNAL_CUSTOMER_REST_KEY;
 
@@ -19,16 +18,20 @@ exports.handler = async (event) => {
       return { statusCode: 400, body: JSON.stringify({ error: "Missing 'type' or 'data'" }) };
     }
 
-    let app_id, rest_key, contents;
+    let app_id, rest_key, headings, contents, imageUrl;
 
     if (type === "new_complaint") {
       app_id = ADMIN_APP_ID;
       rest_key = ADMIN_REST_KEY;
+      headings = { ar: "Cesaro" };
       contents = { ar: `شكوى جديدة من: ${data.customer_name || "عميل"}` };
+      imageUrl = null; // لا صورة للشكاوى
     } else if (type === "broadcast_to_customers") {
       app_id = CUSTOMER_APP_ID;
       rest_key = CUSTOMER_REST_KEY;
+      headings = { ar: data.title || "Cesaro" };
       contents = { ar: data.message || "إشعار جديد" };
+      imageUrl = data.imageUrl || null;
     } else {
       return { statusCode: 400, body: JSON.stringify({ error: "Invalid notification type" }) };
     }
@@ -41,10 +44,15 @@ exports.handler = async (event) => {
     const payload = {
       app_id,
       included_segments: ["Subscribed Users"],
-      headings: { ar: "Cesaro" },
+      headings,
       contents,
-      url: "https://calamari-message.netlify.app/"
+      url: "https://calamari-message.netlify.app/",
     };
+
+    if (imageUrl) {
+      payload.chrome_web_image = imageUrl;
+      payload.big_picture = imageUrl;
+    }
 
     const auth = Buffer.from(`:${rest_key}`).toString("base64");
     const response = await fetch("https://onesignal.com/api/v1/notifications", {
