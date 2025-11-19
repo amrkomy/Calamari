@@ -1,25 +1,50 @@
-self.addEventListener('install', (e) => {
-  self.skipWaiting();
+// إصدار Service Worker
+const CACHE_NAME = 'complaints-v1';
+
+// الملفات التي سيتم تخزينها في الكاش
+const STATIC_CACHE_URLS = [
+  '/',
+  '/index.html',
+  '/manifest.json',
+  '/icon-192x192.png',
+  '/icon-512x512.png'
+];
+
+// تهيئة Service Worker
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then((cache) => {
+        return cache.addAll(STATIC_CACHE_URLS);
+      })
+      .then(() => self.skipWaiting())
+  );
 });
 
-self.addEventListener('activate', (e) => {
-  e.waitUntil(self.clients.claim());
+// تفعيل Service Worker
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cacheName) => {
+          if (cacheName !== CACHE_NAME) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    }).then(() => self.clients.claim())
+  );
 });
 
-self.addEventListener('push', (e) => {
-  const data = e.data.json();
-  self.registration.showNotification(data.title, {
-    body: data.body,
-    icon: data.icon || '/logo.png',
-    badge: '/logo.png',
-    vibrate: [200, 100, 200],
-    data: { url: data.url || '/' }
-  });
-});
-
-self.addEventListener('notificationclick', (e) => {
-  e.notification.close();
-  e.waitUntil(
-    self.clients.openWindow(e.notification.data?.url || '/')
+// معالجة طلبات الشبكة
+self.addEventListener('fetch', (event) => {
+  event.respondWith(
+    caches.match(event.request)
+      .then((cachedResponse) => {
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+        return fetch(event.request);
+      })
   );
 });
