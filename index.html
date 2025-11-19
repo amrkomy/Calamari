@@ -72,6 +72,24 @@
       color: var(--primary);
       font-weight: 700;
     }
+    .stats-btn {
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 13px;
+      transition: all 0.3s;
+      font-family: 'Tajawal', sans-serif;
+      text-decoration: none;
+    }
+    .stats-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
     .content-area {
       padding: 15px;
     }
@@ -221,8 +239,7 @@
     .view-btn:hover {
       background: #1565C0;
     }
-    .details-modal,
-    .manual-notify-modal {
+    .details-modal {
       position: fixed;
       top: 0;
       left: 0;
@@ -235,8 +252,7 @@
       justify-content: center;
       padding: 15px;
     }
-    .details-content,
-    .manual-notify-content {
+    .details-content {
       background: #fff;
       border-radius: 10px;
       width: 100%;
@@ -245,8 +261,7 @@
       overflow-y: auto;
       animation: modalFadeIn 0.3s ease;
     }
-    .details-header,
-    .manual-notify-header {
+    .details-header {
       padding: 12px 15px;
       border-bottom: 1px solid #eee;
       display: flex;
@@ -257,21 +272,18 @@
       background: #fff;
       z-index: 1;
     }
-    .details-title,
-    .manual-notify-title {
+    .details-title {
       font-size: 16px;
       color: var(--primary);
     }
-    .close-details,
-    .close-notify {
+    .close-details {
       background: none;
       border: none;
       font-size: 18px;
       cursor: pointer;
       color: var(--muted);
     }
-    .details-body,
-    .manual-notify-body {
+    .details-body {
       padding: 15px;
     }
     .complaint-meta {
@@ -457,7 +469,14 @@
       50% { transform: scale(1.05); }
       100% { transform: scale(1); }
     }
-    /* أنماط الردود */
+    @media (max-width: 768px) {
+      .install-pwa-btn {
+        bottom: 70px;
+        left: 15px;
+        width: 50px;
+        height: 50px;
+      }
+    }
     .comments-section, .add-comment-section {
       margin-top: 20px;
       padding-top: 15px;
@@ -507,49 +526,9 @@
     .comment-btn:hover {
       background: #218838;
     }
-    /* أنماط نموذج الإشعارات */
-    .manual-notify-section {
-      margin-top: 25px;
-    }
-    .manual-send-btn {
-      width: 100%;
-      padding: 10px;
-      font-size: 15px;
-    }
-    #imagePreview {
-      max-width: 100%;
-      max-height: 200px;
-      display: none;
-      margin-top: 10px;
-      border-radius: 6px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    .history-box {
-      margin-top: 20px;
-      max-height: 200px;
-      overflow-y: auto;
-    }
-    .history-item {
-      padding: 10px 0;
-      border-bottom: 1px solid #eee;
-    }
-    .history-item:last-child {
-      border-bottom: none;
-    }
     @keyframes modalFadeIn {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes vibrate {
-      0% { transform: translate(0); }
-      20% { transform: translate(-2px, 2px); }
-      40% { transform: translate(-2px, -2px); }
-      60% { transform: translate(2px, 2px); }
-      80% { transform: translate(2px, -2px); }
-      100% { transform: translate(0); }
-    }
-    .vibrate {
-      animation: vibrate 0.5s linear;
     }
     @media (min-width: 768px) {
       .content-area {
@@ -567,8 +546,8 @@
     <div class="top-bar">
       <h2 class="page-title">إدارة الشكاوى</h2>
       <div class="top-bar-actions">
-        <button id="openNotifyModal" class="stats-btn">
-          <i class="fas fa-bell"></i> إرسال إشعار للمتابعين
+        <button class="stats-btn" onclick="window.open('send.html', '_blank')">
+          <i class="fas fa-bell"></i> إرسال إشعارات
         </button>
         <div class="user-avatar">c</div>
       </div>
@@ -596,12 +575,10 @@
           <div class="stat-change"><i class="fas fa-equals"></i> لا يوجد تغيير</div>
         </div>
       </div>
-
       <div class="chart-card">
         <h4 class="chart-title">الشكاوى حسب الشهر</h4>
         <canvas id="monthlyChart"></canvas>
       </div>
-
       <div class="table-container">
         <div class="table-header">
           <h3 class="table-title">آخر الشكاوى</h3>
@@ -634,13 +611,7 @@
           </table>
         </div>
       </div>
-
-      <!-- سجل الإشعارات المرسلة (اختياري - يمكن إخفاؤه أو عرضه في المودال) -->
-      <!-- سنعرضه في المودال فقط للحفاظ على التنظيم -->
-
     </div>
-
-    <!-- Modal عرض التفاصيل -->
     <div class="details-modal" id="detailsModal">
       <div class="details-content">
         <div class="details-header">
@@ -661,14 +632,10 @@
             <h5>نص الشكوى:</h5>
             <p id="detailComplaintText"></p>
           </div>
-          <!-- قسم الردود -->
           <div class="comments-section" id="commentsSection">
             <h5>الردود:</h5>
-            <div id="commentsList" class="comments-list">
-              <!-- سيتم ملؤه ديناميكيًا -->
-            </div>
+            <div id="commentsList" class="comments-list"></div>
           </div>
-          <!-- إضافة رد جديد -->
           <div class="add-comment-section" id="addCommentSection">
             <h5>أضف ردًا:</h5>
             <textarea id="newCommentText" placeholder="اكتب ردك هنا..."></textarea>
@@ -705,44 +672,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Modal إرسال إشعار يدوي -->
-    <div class="manual-notify-modal" id="manualNotifyModal">
-      <div class="manual-notify-content">
-        <div class="manual-notify-header">
-          <h3 class="manual-notify-title">إرسال إشعار للمتابعين</h3>
-          <button class="close-notify" id="closeNotifyBtn">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-        <div class="manual-notify-body">
-          <form id="notifyForm">
-            <div class="mb-3">
-              <label for="notifyTitle" class="form-label">العنوان</label>
-              <input type="text" class="form-control" id="notifyTitle" required>
-            </div>
-            <div class="mb-3">
-              <label for="notifyMessage" class="form-label">الرسالة</label>
-              <textarea class="form-control" id="notifyMessage" rows="3" required></textarea>
-            </div>
-            <div class="mb-3">
-              <label for="imageFile" class="form-label">صورة (اختياري)</label>
-              <input type="file" class="form-control" id="imageFile" accept="image/*">
-              <img id="imagePreview" src="">
-            </div>
-            <button type="submit" class="btn btn-primary manual-send-btn" id="sendNotifyBtn">
-              <span id="notifyBtnText">إرسال الإشعار</span>
-            </button>
-          </form>
-
-          <div class="history-box" id="historyBox">
-            <h5 class="mt-4">سجل الإشعارات</h5>
-            <div id="historyList"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <div class="notification-alert" id="notificationAlert">
       <i class="fas fa-bell"></i>
       <span id="notificationText">شكوى جديدة تم تقديمها</span>
@@ -756,136 +685,32 @@
   <!-- External Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- OneSignal Web SDK -->
-  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-
   <script>
-    // OneSignal init
-    window.OneSignalDeferred = window.OneSignalDeferred || [];
-    OneSignalDeferred.push(async function(OneSignal) {
-      await OneSignal.init({
-        appId: "2ccf7c9b-680e-47f6-b6d6-0729f3dbd452",
-        notifyButton: { enable: false }
-      });
-    });
-
     // ======== Supabase الإعدادات ========
     const SUPABASE_URL = "https://xczrexzzmmrpdokcitvg.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhjenJleHp6bW1ycGRva2NpdHZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA1MDExNDEsImV4cCI6MjA3NjA3NzE0MX0.RoTn4GQ7yOKhGInH6aIuuXpmlvzFfx0tY6gn9Myx1Gk";
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // ======== متغيرات الإدارة ========
+    // ======== متغيرات التطبيق ========
     const totalComplaintsEl = document.getElementById('totalComplaints');
     const pendingComplaintsEl = document.getElementById('pendingComplaints');
     const resolvedComplaintsEl = document.getElementById('resolvedComplaints');
     const rejectedComplaintsEl = document.getElementById('rejectedComplaints');
     const complaintsTableBody = document.getElementById('complaintsTableBody');
     const detailsModal = document.getElementById('detailsModal');
-    const manualNotifyModal = document.getElementById('manualNotifyModal');
-    const notificationAlert = document.getElementById('notificationAlert');
-    const notificationText = document.getElementById('notificationText');
     const toast = document.getElementById('toast');
     const installPwaBtn = document.getElementById('installPwaBtn');
+    const commentsList = document.getElementById('commentsList');
+    const newCommentText = document.getElementById('newCommentText');
+    const addCommentBtn = document.getElementById('addCommentBtn');
 
     let monthlyChart;
     let currentComplaintId = null;
     let allBranches = [];
     let realtimeChannel = null;
     let deferredPrompt = null;
-    let lastComplaintIds = new Set();
 
-    // ======== دالة إرسال إشعار OneSignal عبر Netlify Function ========
-async function sendOneSignalNotification(complaint) {
-  try {
-    const payload = {
-      target: "admin", // ← مهم جدًا
-      title: "شكوى جديدة",
-      message: `من: ${complaint.customer_name || 'عميل مجهول'} - ${complaint.complaint_text?.substring(0, 50)}...`,
-      imageUrl: null
-    };
-    const response = await fetch("/.netlify/functions/sendNotification", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-    if (!response.ok) {
-      const err = await response.json();
-      console.warn("OneSignal notification failed:", err);
-    }
-  } catch (e) {
-    console.warn("Failed to send OneSignal notification:", e);
-  }
-}
-    // ======== دالة إرسال إشعار يدوي (للمتابعين) ========
-    async function sendManualNotification(title, message, imageUrl) {
-      try {
-        const response = await fetch("/.netlify/functions/sendNotification", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            target: "customers",
-            title,
-            message,
-            imageUrl
-          })
-        });
-        const result = await response.json();
-        return response.ok && (result.id || result.success);
-      } catch (e) {
-        console.error("Manual notification error:", e);
-        return false;
-      }
-    }
-
-    // ======== تسجيل الـ service-worker ========
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("/sw.js");
-    }
-
-    // ======== Toast Utility ========
-    function showToast(msg, duration = 3000) {
-      toast.textContent = msg;
-      toast.style.display = 'block';
-      setTimeout(() => {
-        toast.style.display = 'none';
-      }, duration);
-    }
-
-    // ======== سجل الإشعارات ========
-    const HISTORY_KEY = "notifHistory";
-    let notificationHistory = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
-
-    function saveToHistory(title, message) {
-      notificationHistory.unshift({
-        time: Date.now(),
-        title,
-        body: message
-      });
-      localStorage.setItem(HISTORY_KEY, JSON.stringify(notificationHistory));
-      renderHistory();
-    }
-
-    function renderHistory() {
-      const historyList = document.getElementById('historyList');
-      if (!notificationHistory.length) {
-        historyList.innerHTML = '<p class="text-muted">لا توجد إشعارات بعد</p>';
-        return;
-      }
-      historyList.innerHTML = notificationHistory
-        .map(item => {
-          const timeStr = new Date(item.time).toLocaleString("ar-EG");
-          return `
-            <div class="history-item">
-              <div><strong>${escapeHtml(item.title)}</strong></div>
-              <div>${escapeHtml(item.body)}</div>
-              <small class="text-muted">${timeStr}</small>
-            </div>
-          `;
-        })
-        .join('');
-    }
-
-    // ======== تهيئة التطبيق ========
+    // تهيئة التطبيق
     document.addEventListener('DOMContentLoaded', async () => {
       await loadBranches();
       await loadComplaints();
@@ -895,8 +720,11 @@ async function sendOneSignalNotification(complaint) {
       setupEventListeners();
       setupRealtimeUpdates();
       setupPWA();
-      renderHistory();
     });
+
+    function cleanup() {
+      if (realtimeChannel) supabase.removeChannel(realtimeChannel);
+    }
 
     // ======== PWA التثبيت ========
     function setupPWA() {
@@ -931,39 +759,27 @@ async function sendOneSignalNotification(complaint) {
         }, 3000);
       }
     }
+
     function showInstallButton() {
       if (!isAppInstalled()) {
         installPwaBtn.classList.remove('hidden');
         setTimeout(() => hideInstallButton(), 30000);
       }
     }
+
     function hideInstallButton() {
       installPwaBtn.classList.add('hidden');
     }
+
     function isAppInstalled() {
       return window.matchMedia('(display-mode: standalone)').matches || 
              window.navigator.standalone ||
              document.referrer.includes('android-app://');
     }
+
     function logAppInstalled() {
       console.log('تم تثبيت التطبيق بنجاح');
       showToast('تم تثبيت التطبيق بنجاح على جهازك!', 3000);
-    }
-
-    // ======== الإشعارات المحلية ========
-    function showNewComplaintNotification(complaint) {
-      notificationText.textContent = `شكوى جديدة من ${complaint.customer_name || 'عميل'}`;
-      notificationAlert.classList.add('show', 'vibrate');
-      playNotificationSound();
-      if ('vibrate' in navigator) navigator.vibrate([200, 100, 200]);
-      setTimeout(() => {
-        notificationAlert.classList.remove('show', 'vibrate');
-      }, 5000);
-    }
-    function playNotificationSound() {
-      const audio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3');
-      audio.volume = 0.3;
-      audio.play().catch(() => {});
     }
 
     // ======== إدارة الفروع ========
@@ -1005,15 +821,7 @@ async function sendOneSignalNotification(complaint) {
         if (branchId !== 'all') query = query.eq('branch_id', branchId);
         const { data: complaints, error } = await query;
         if (error) throw error;
-        const currentIds = new Set(complaints.map(c => c.id));
-        const newComplaints = complaints.filter(c => !lastComplaintIds.has(c.id));
-        if (newComplaints.length > 0) {
-          newComplaints.forEach(complaint => {
-            showNewComplaintNotification(complaint);
-            sendOneSignalNotification(complaint, "admin");
-          });
-        }
-        lastComplaintIds = currentIds;
+        // ← تم إزالة كشف الشكاوى الجديدة وإرسال الإشعارات
         renderComplaintsTable(complaints || []);
       } catch (e) {
         console.error('Error loading complaints:', e);
@@ -1125,6 +933,7 @@ async function sendOneSignalNotification(complaint) {
         }
       });
     }
+
     async function loadChartsData() {
       try {
         const now = new Date();
@@ -1230,8 +1039,8 @@ async function sendOneSignalNotification(complaint) {
         showToast('خطأ في تحميل الردود', 3000);
       }
     }
+
     function renderComments(comments) {
-      const commentsList = document.getElementById('commentsList');
       commentsList.innerHTML = '';
       if (comments.length === 0) {
         commentsList.innerHTML = '<p style="color:#999; font-style:italic;">لا توجد ردود حتى الآن.</p>';
@@ -1255,8 +1064,9 @@ async function sendOneSignalNotification(complaint) {
         commentsList.appendChild(div);
       });
     }
+
     async function addComplaintComment() {
-      const text = document.getElementById('newCommentText').value.trim();
+      const text = newCommentText.value.trim();
       if (!text) {
         showToast('يرجى كتابة رد قبل الإرسال', 3000);
         return;
@@ -1276,7 +1086,7 @@ async function sendOneSignalNotification(complaint) {
           });
         if (error) throw error;
         showToast('تم إضافة الرد بنجاح', 3000);
-        document.getElementById('newCommentText').value = '';
+        newCommentText.value = '';
         await loadComplaintComments(currentComplaintId);
       } catch (e) {
         console.error('Error adding comment:', e);
@@ -1332,63 +1142,20 @@ async function sendOneSignalNotification(complaint) {
     }
 
     // ======== دوال مساعدة ========
+    function showToast(message, duration = 3000) {
+      toast.textContent = message;
+      toast.style.display = 'block';
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, duration);
+    }
+
     function escapeHtml(text) {
       const div = document.createElement('div');
       div.textContent = text ?? '';
       return div.innerHTML;
     }
 
-    // ======== معالجة رفع الصورة ========
-    document.getElementById('imageFile').addEventListener('change', function () {
-      const file = this.files[0];
-      const preview = document.getElementById('imagePreview');
-      if (!file) {
-        preview.style.display = 'none';
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        preview.src = e.target.result;
-        preview.style.display = 'block';
-      };
-      reader.readAsDataURL(file);
-    });
-
-    // ======== إرسال إشعار يدوي ========
-    document.getElementById('notifyForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const title = document.getElementById('notifyTitle').value.trim();
-      const message = document.getElementById('notifyMessage').value.trim();
-      const file = document.getElementById('imageFile').files[0];
-      const btn = document.getElementById('sendNotifyBtn');
-      const btnText = document.getElementById('notifyBtnText');
-
-      btn.disabled = true;
-      btnText.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> جاري الإرسال...';
-
-      let imageUrl = null;
-      if (file) {
-        // رفع عبر Supabase Storage (اختياري - يمكن تنفيذه لاحقًا)
-        // الآن سنستخدم OneSignal بدون صورة أو نستخدم رابط ثابت مؤقتًا
-        // لكن الأفضل: رفع الصورة في Netlify Function (نتركها null للتبسيط)
-        // يمكنك لاحقًا تطوير uploadImage function
-      }
-
-      const success = await sendManualNotification(title, message, imageUrl);
-      if (success) {
-        saveToHistory(title, message);
-        showToast("✅ تم إرسال الإشعار بنجاح", 3000);
-        document.getElementById('notifyForm').reset();
-        document.getElementById('imagePreview').style.display = 'none';
-      } else {
-        showToast("❌ فشل إرسال الإشعار", 3000);
-      }
-
-      btn.disabled = false;
-      btnText.textContent = "إرسال الإشعار";
-    });
-
-    // ======== إعداد الأحداث ========
     function setupEventListeners() {
       document.getElementById('complaintFilterStatus').addEventListener('change', loadComplaints);
       document.getElementById('complaintFilterBranch').addEventListener('change', loadComplaints);
@@ -1396,21 +1163,12 @@ async function sendOneSignalNotification(complaint) {
       document.getElementById('closeDetailsBtn').addEventListener('click', () => {
         detailsModal.style.display = 'none';
       });
-      document.getElementById('closeNotifyBtn').addEventListener('click', () => {
-        manualNotifyModal.style.display = 'none';
-      });
-      document.getElementById('openNotifyModal').addEventListener('click', () => {
-        manualNotifyModal.style.display = 'flex';
-      });
       document.getElementById('resolveBtn').addEventListener('click', () => updateComplaintStatus('resolved'));
       document.getElementById('rejectBtn').addEventListener('click', () => updateComplaintStatus('rejected'));
       document.getElementById('pendingBtn').addEventListener('click', () => updateComplaintStatus('pending'));
-      document.getElementById('addCommentBtn').addEventListener('click', addComplaintComment);
+      addCommentBtn.addEventListener('click', addComplaintComment);
       detailsModal.addEventListener('click', (e) => {
         if (e.target === detailsModal) detailsModal.style.display = 'none';
-      });
-      manualNotifyModal.addEventListener('click', (e) => {
-        if (e.target === manualNotifyModal) manualNotifyModal.style.display = 'none';
       });
     }
   </script>
