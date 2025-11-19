@@ -19,10 +19,9 @@ exports.handler = async (event) => {
   try {
     const { title, message, imageUrl } = JSON.parse(event.body || "{}");
 
-    // إرسال فقط لمن لديهم external_user_id = "follower"
     const payload = {
       app_id: ONESIGNAL_APP_ID,
-      include_external_user_ids: ["follower"],
+      included_segments: ["All"], // 📢 إرسال لكل المشتركين
       headings: { en: title || "إشعار جديد" },
       contents: { en: message || "لا يوجد محتوى" },
       chrome_web_image: imageUrl || undefined,
