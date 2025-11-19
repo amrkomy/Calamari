@@ -3,96 +3,212 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>لوحة الإدارة | كاليماري</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+  <title>إدارة الشكاوى | Cesaro</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet" />
   <style>
-    body { background: #f8f9fa; padding-top: 20px; }
-    .card { box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 24px; }
-    .status-badge { padding: 4px 8px; border-radius: 20px; font-size: 0.85em; }
-    .status-pending { background: #fff3e0; color: #e65100; }
-    .status-resolved { background: #e8f5e9; color: #2e7d32; }
-    .status-rejected { background: #ffebee; color: #c62828; }
-    #complaintsSection { margin-top: 30px; }
-    .notification-banner {
-      position: fixed; top: 15px; left: 50%; transform: translateX(-50%);
-      background: #000; color: white; padding: 10px 20px;
-      border-radius: 8px; z-index: 1000; display: none;
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
+    body { background: #f5f5f5; padding: 20px; }
+    .container { max-width: 1200px; margin: 0 auto; }
+
+    /* أنماط زر تفعيل الإشعارات (مدمج مع الواجهة) */
+    .top-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .page-title { font-size: 24px; font-weight: 700; color: #000; }
+    .stats-btn {
+      background: #000;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 13px;
+    }
+    .stats-btn:hover { background: #333; }
+
+    /* أنماط قسم الإرسال (كما في calamari-message) */
+    .send-section {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      margin-bottom: 20px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+      color: #333;
+    }
+    .form-control {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-family: 'Tajawal', sans-serif;
+    }
+    .btn-primary {
+      background: #000;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'Tajawal', sans-serif;
+      width: 100%;
+    }
+    .btn-primary:hover { background: #333; }
+
+    /* سجل الإشعارات */
+    .history-section {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      margin-bottom: 20px;
+    }
+    .history-title { font-size: 18px; margin-bottom: 15px; color: #000; }
+    .history-item {
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .history-item:last-child { border-bottom: none; }
+    .history-item strong { color: #000; display: block; }
+    .history-item small { color: #777; }
+
+    /* أنماط إدارة الشكاوى (كما في admin-complants) */
+    .complaints-section {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .complaints-title { font-size: 18px; margin-bottom: 15px; color: #000; }
+    .complaints-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .complaints-table th,
+    .complaints-table td {
+      padding: 10px;
+      text-align: right;
+      border-bottom: 1px solid #eee;
+    }
+    .complaints-table th { color: #757575; font-weight: 500; }
+    .status-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .status-pending { background: #FFF3E0; color: #FFA000; }
+    .status-resolved { background: #E8F5E9; color: #388E3C; }
+    .status-rejected { background: #FFEBEE; color: #D32F2F; }
+    .action-btn {
+      background: #1976D2;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    /* إشعار منبثق */
+    .notification-alert {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #000;
+      color: #fff;
+      padding: 12px 15px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      display: none;
+      z-index: 1000;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- التحكم بالإشعارات -->
-    <div class="row mb-4">
-      <div class="col-12">
-        <button id="enableAdminNotifBtn" class="btn btn-warning">
-          🔔 تفعيل إشعارات استلام الشكاوى
-        </button>
-      </div>
+    <!-- زر تفعيل إشعارات الشكاوى -->
+    <div class="top-actions">
+      <h2 class="page-title">إدارة الشكاوى والإشعارات</h2>
+      <button id="enableAdminNotifBtn" class="stats-btn">
+        <i class="fas fa-bell"></i> تفعيل إشعارات الشكاوى
+      </button>
     </div>
 
-    <!-- إرسال إشعار للعملاء -->
-    <div class="row">
-      <div class="col-md-5">
-        <div class="card">
-          <div class="card-header bg-primary text-white">إرسال إشعار للعملاء</div>
-          <div class="card-body">
-            <form id="broadcastForm">
-              <div class="mb-3">
-                <label class="form-label">العنوان</label>
-                <input type="text" class="form-control" id="title" placeholder="اختياري" />
-              </div>
-              <div class="mb-3">
-                <label class="form-label">الرسالة <span class="text-danger">*</span></label>
-                <textarea class="form-control" id="message" rows="3" placeholder="اكتب الرسالة هنا..." required></textarea>
-              </div>
-              <button type="submit" class="btn btn-primary w-100">إرسال الإشعار</button>
-            </form>
+    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+      <!-- قسم إرسال الإشعارات (كما في calamari-message) -->
+      <div style="flex: 1; min-width: 300px;">
+        <div class="send-section">
+          <h3>إرسال إشعار</h3>
+          <div class="form-group">
+            <label>العنوان</label>
+            <input type="text" id="title" class="form-control" />
           </div>
+          <div class="form-group">
+            <label>الرسالة <span style="color: red;">*</span></label>
+            <textarea id="message" class="form-control" rows="3" required></textarea>
+          </div>
+          <div class="form-group">
+            <label>صورة (اختياري)</label>
+            <input type="text" id="imageUrl" class="form-control" placeholder="رابط الصورة" />
+          </div>
+          <button id="sendBroadcastBtn" class="btn-primary">إرسال الإشعار</button>
         </div>
-      </div>
 
-      <!-- سجل الإشعارات -->
-      <div class="col-md-7">
-        <div class="card">
-          <div class="card-header bg-secondary text-white">سجل الإشعارات</div>
-          <div class="card-body">
-            <div id="historyList" class="list-group">
-              <small class="text-muted">لا توجد إشعارات بعد</small>
+        <div class="history-section">
+          <h3 class="history-title">سجل الإشعارات</h3>
+          <div id="historyList">
+            <div class="history-item">
+              <strong>لا توجد إشعارات بعد</strong>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- عرض الشكاوى -->
-    <div id="complaintsSection">
-      <h3>الشكاوى الحديثة</h3>
-      <div class="table-responsive">
-        <table class="table table-hover">
-          <thead>
-            <tr>
-              <th>التاريخ</th>
-              <th>العميل</th>
-              <th>الحالة</th>
-              <th>الإجراءات</th>
-            </tr>
-          </thead>
-          <tbody id="complaintsTableBody">
-            <tr><td colspan="4" class="text-center">جارٍ التحميل...</td></tr>
-          </tbody>
-        </table>
+      <!-- قسم الشكاوى (كما في admin-complants) -->
+      <div style="flex: 2; min-width: 300px;">
+        <div class="complaints-section">
+          <h3 class="complaints-title">آخر الشكاوى</h3>
+          <table class="complaints-table">
+            <thead>
+              <tr>
+                <th>التاريخ</th>
+                <th>العميل</th>
+                <th>الحالة</th>
+                <th>الإجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="complaintsTableBody">
+              <tr><td colspan="4" style="text-align: center;">جارٍ التحميل...</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- إشعار منبثق -->
-  <div id="notifBanner" class="notification-banner">
+  <div id="notifBanner" class="notification-alert">
     <i class="fas fa-bell"></i> <span id="notifText">شكوى جديدة!</span>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
   <script src="script.js"></script>
 </body>
 </html>
