@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#000000"/>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
-  <title>إدارة الشكاوى | كاليماري</title>
+  <title>إدارة الشكاوى | calamari</title>
   <link rel="manifest" href="manifest.json">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -61,13 +61,13 @@
       font-size: 20px;
       font-weight: 500;
     }
-   .user-avatar {
-  width: 50px;
-  height: 50px;
-  border-radius: 70%;
-  object-fit: cover;
-  display: block;
-}
+    .user-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 70%;
+      object-fit: cover;
+      display: block;
+    }
     .stats-btn {
       background: rgba(255, 255, 255, 0.2);
       color: #fff;
@@ -543,9 +543,10 @@
       <h2 class="page-title">إدارة الشكاوى</h2>
       <div class="top-bar-actions">
         <button class="stats-btn" onclick="window.location.href = 'send.html'">
-  <i class="fas fa-bell"></i> إرسال إشعارات
-</button>
-<img src="logo.png" class="user-avatar" alt="شعار كاليماري">      </div>
+          <i class="fas fa-bell"></i> إرسال إشعارات
+        </button>
+        <img src="logo.png" class="user-avatar" alt="شعار future">
+      </div>
     </div>
     <div class="content-area">
       <div class="stats-grid">
@@ -680,11 +681,11 @@
   <!-- External Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="config.js"></script>
   <script>
     // ======== Supabase الإعدادات ========
-    const SUPABASE_URL = "https://xczrexzzmmrpdokcitvg.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhjenJleHp6bW1ycGRva2NpdHZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA1MDExNDEsImV4cCI6MjA3NjA3NzE0MX0.RoTn4GQ7yOKhGInH6aIuuXpmlvzFfx0tY6gn9Myx1Gk";
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const { supabaseUrl, supabaseKey } = getSupabaseConfig();
+    const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 
     // ======== متغيرات التطبيق ========
     const totalComplaintsEl = document.getElementById('totalComplaints');
@@ -718,7 +719,7 @@
     });
 
     function cleanup() {
-      if (realtimeChannel) supabase.removeChannel(realtimeChannel);
+      if (realtimeChannel) supabaseClient.removeChannel(realtimeChannel);
     }
 
     // ======== PWA التثبيت ========
@@ -780,7 +781,7 @@
     // ======== إدارة الفروع ========
     async function loadBranches() {
       try {
-        const { data: branches, error } = await supabase
+        const { data: branches, error } = await supabaseClient
           .from('branches')
           .select('id, name')
           .order('name');
@@ -805,7 +806,7 @@
       const status = document.getElementById('complaintFilterStatus').value;
       const branchId = document.getElementById('complaintFilterBranch').value;
       try {
-        let query = supabase
+        let query = supabaseClient
           .from('complaints')
           .select(`id, customer_name, customer_phone, complaint_text, status, 
                   created_at, resolved_at, resolved_by, resolution_notes, 
@@ -816,7 +817,6 @@
         if (branchId !== 'all') query = query.eq('branch_id', branchId);
         const { data: complaints, error } = await query;
         if (error) throw error;
-        // ← تم إزالة كشف الشكاوى الجديدة وإرسال الإشعارات
         renderComplaintsTable(complaints || []);
       } catch (e) {
         console.error('Error loading complaints:', e);
@@ -871,18 +871,18 @@
     // ======== الإحصائيات ========
     async function loadStats() {
       try {
-        const { count: totalCount } = await supabase
+        const { count: totalCount } = await supabaseClient
           .from('complaints')
           .select('*', { count: 'exact', head: true });
-        const { count: pendingCount } = await supabase
+        const { count: pendingCount } = await supabaseClient
           .from('complaints')
           .select('*', { count: 'exact', head: true })
           .eq('status', 'pending');
-        const { count: resolvedCount } = await supabase
+        const { count: resolvedCount } = await supabaseClient
           .from('complaints')
           .select('*', { count: 'exact', head: true })
           .eq('status', 'resolved');
-        const { count: rejectedCount } = await supabase
+        const { count: rejectedCount } = await supabaseClient
           .from('complaints')
           .select('*', { count: 'exact', head: true })
           .eq('status', 'rejected');
@@ -933,7 +933,7 @@
       try {
         const now = new Date();
         const sixMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 5, 1);
-        const { data: complaints, error } = await supabase
+        const { data: complaints, error } = await supabaseClient
           .from('complaints')
           .select('id, created_at, branch_id, branches(name)')
           .gte('created_at', sixMonthsAgo.toISOString());
@@ -963,7 +963,7 @@
     // ======== تفاصيل الشكوى ========
     async function showComplaintDetails(complaintId) {
       try {
-        const { data: c, error } = await supabase
+        const { data: c, error } = await supabaseClient
           .from('complaints')
           .select(`id, customer_name, customer_phone, complaint_text, status, 
                   created_at, resolved_at, resolved_by, resolution_notes, 
@@ -1022,7 +1022,7 @@
     // ======== الردود على الشكوى ========
     async function loadComplaintComments(complaintId) {
       try {
-        const { data: comments, error } = await supabase
+        const { data: comments, error } = await supabaseClient
           .from('complaint_comments')
           .select('id, author, comment_text, created_at')
           .eq('complaint_id', complaintId)
@@ -1071,7 +1071,7 @@
         return;
       }
       try {
-        const { error } = await supabase
+        const { error } = await supabaseClient
           .from('complaint_comments')
           .insert({
             complaint_id: currentComplaintId,
@@ -1100,7 +1100,7 @@
           resolved_by: status !== 'pending' ? 'المسؤول' : null,
           resolution_notes: resolutionNotes || null
         };
-        const { error } = await supabase
+        const { error } = await supabaseClient
           .from('complaints')
           .update(updateData)
           .eq('id', currentComplaintId);
@@ -1123,8 +1123,8 @@
 
     // ======== التحديثات الفورية ========
     function setupRealtimeUpdates() {
-      if (realtimeChannel) supabase.removeChannel(realtimeChannel);
-      realtimeChannel = supabase
+      if (realtimeChannel) supabaseClient.removeChannel(realtimeChannel);
+      realtimeChannel = supabaseClient
         .channel('complaints-insert')
         .on('postgres_changes', {
           event: 'INSERT',
